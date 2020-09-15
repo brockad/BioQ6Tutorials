@@ -39,7 +39,7 @@ unique(dogs$shortcoat)
 ```
 
 Starting to plot data:
-```{r Plotting}
+```{r Initial Plotting}
 plot(dogs$weight, dogs$aod)
 #It appears that smaller dogs tend to live longer than larger dogs.
 
@@ -64,8 +64,27 @@ p2 <- p1 + geom_abline(color = "skyblue", linetype = "dashed",
 p2
 
 p3 <- p2 + geom_text_repel(mapping = aes_string(label = "breed"), 
-                           size = 2.5, color = "gainsboro")
+                           color = "gainsboro")
+
 p3
+
+#Adding color to the plot
+#Factoring to make discrete colors for plot
+dogs$shortcoat <- factor(dogs$shortcoat)
+
+p4 <- ggplot(dogs, aes_string(x = "weight", y = "aod", label = "breed",
+                              color = "shortcoat")) +
+  geom_point() + theme_cowplot()
+
+p5 <- p4 + scale_color_manual(values = c("firebrick", "tomato"),
+                              na.value = "grey")
+
+p5 + scale_x_continuous(trans = "sqrt")
+
+#Saving a plot
+ggsave("dogs.pdf", p5, height = 4, width = 4.5)
 ```
+
+
 
 
