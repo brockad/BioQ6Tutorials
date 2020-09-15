@@ -1,0 +1,57 @@
+---
+title: "ggplottutorial"
+author: "brockad"
+date: "2020-09-15"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+Learning how to explore data and tell stories using ggplot2.
+
+Load packages:
+```{r Package Loading}
+library(tidyverse)
+library(ggplot2)
+library(cowplot)
+library(ggrepel)
+library(htmlwidgets)
+library(plotly)
+```
+
+Load data for data visualization:
+```{r Loading Data}
+dogs <- read_csv(file = "data/dogs.csv")
+
+nrow(dogs)
+ncol(dogs)
+names(dogs)
+head(dogs)
+tail(dogs)
+summary(dogs)
+class(dogs$aod)
+class(dogs$height)
+class(dogs$weight)
+class(dogs$shortcoat)
+
+unique(dogs$shortcoat)
+```
+
+Starting to plot data:
+```{r Plotting}
+plot(dogs$weight, dogs$aod)
+#It appears that smaller dogs tend to live longer than larger dogs.
+
+p1 <- ggplot(dogs, aes_string(x = "weight", y = "aod")) #generate plotting object
+p1 <- ggplot_add(geom_point(), p1) #Adds points to p1
+##p1 #Shows plot
+
+#You can add multiple layers with a single call of ggplot using "+"
+p1 <- ggplot(dogs, aes_string(x = "weight", y = "aod")) + 
+  geom_point() + scale_x_continuous(breaks = seq(0,160,40)) +
+  labs(x = "body weight (lbs)", y = "longevity (years)", title = "Longevity of dogs versus weight") + theme_cowplot()
+p1
+```
+
+

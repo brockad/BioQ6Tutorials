@@ -1,0 +1,45 @@
+---
+title: "toothgrowth"
+author: "brockad"
+date: "2020-09-15"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Performing initial analysis of "ToothGrowth" dataset from R. Use ?ToothGrowth for more information.
+
+Packages:
+```{r Packages}
+library(tidyverse)
+```
+
+
+Read the data:
+```{r Import Teeth}
+toothgrowth <- read_csv("data/toothgrowth.csv")
+```
+
+Plot relationships between length and dose and/or supplement:
+```{r Boxplots}
+boxplot(len ~ dose, data = toothgrowth)
+
+boxplot(len ~ supp, data = toothgrowth)
+
+boxplot(len ~ dose + supp, data = toothgrowth)
+```
+
+
+```{r Permute}
+#Observed difference in teeth length due to supplement method
+mean(toothgrowth$len[toothgrowth$supp == "OJ"]) - mean(toothgrowth$len[toothgrowth$supp == "VC"])
+
+#Permute the observations
+supp_perm <- sample(toothgrowth$supp)
+
+#Calculate mean difference in permuted data
+mean(toothgrowth$len[supp_perm == "OJ"]) - mean(toothgrowth$len[supp_perm == "VC"])
+```
+
