@@ -11,7 +11,11 @@ editor_options:
 Welcome to my *first* research website. This page will house links to the various tutorials I've encountered during the BSD qBio^6 Boot Camp as a member of the *Arabidopsis thaliana* team.
 
 [Data Jiu Jitsu I]
+
 [Data Jiu Jitsu II]
+
 [Data Jiu Jitsu III]
-[Reproducibility: ToothGrowth](toothgrowth.html)
-[Data Visualization](ggplottutorial.html)
+
+[|Reproducibility: ToothGrowth|](toothgrowth.html)
+
+[|Data Visualization|](ggplottutorial.html)

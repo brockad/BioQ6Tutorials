@@ -52,6 +52,20 @@ p1 <- ggplot(dogs, aes_string(x = "weight", y = "aod")) +
   geom_point() + scale_x_continuous(breaks = seq(0,160,40)) +
   labs(x = "body weight (lbs)", y = "longevity (years)", title = "Longevity of dogs versus weight") + theme_cowplot()
 p1
+
+#Add fit line observed and previous fitting
+fit <- lm(aod ~ weight,dogs)
+summary(fit)
+coef(fit)
+p2 <- p1 + geom_abline(color = "skyblue", linetype = "dashed", 
+                       intercept = coef(fit)[1], slope = coef(fit)[2]) +
+  geom_abline(color = "tomato", linetype = "dashed", intercept = 13, slope = -1/28)
+
+p2
+
+p3 <- p2 + geom_text_repel(mapping = aes_string(label = "breed"), 
+                           size = 2.5, color = "gainsboro")
+p3
 ```
 
 
