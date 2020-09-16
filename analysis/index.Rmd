@@ -7,6 +7,7 @@ output:
 editor_options:
   chunk_output_type: console
 ---
+## Introduction:
 
 Welcome to my **first** research website. This page will house links to the various tutorials I've encountered during the BSD qBio^6 Boot Camp as a member of the *Arabidopsis thaliana* team.
 
@@ -21,5 +22,9 @@ Welcome to my **first** research website. This page will house links to the vari
 
 ## Challenges:
 
+[ <font size="4"> Basic Computing I](computingchallengeI.html)
+[ <font size="4"> Basic Computing II](computingchllengeII.html)
 [ <font size="4">Busayo's Webpage: CLICK HERE FOR REPRODUCIBILITY CHALLENGE</font>](https://busayob.github.io/myproject/)
+[ <font size="4">Visualization Challenge</font>](visualizationchallenge.html)
+[ <font size="4">Statistics  Challenge</font>](statisticschallenge.html)
 
