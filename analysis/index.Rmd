@@ -17,7 +17,7 @@ Welcome to my **first** research website. This page will house links to the vari
 [Data Jiu Jitsu III]\
 [Reproducibility: ToothGrowth](toothgrowth.html)\
 [Data Visualization](ggplottutorial.html)\
-[Statistics] (statstutorial.html)\
+[Statistics](statstutorial.html)\
 
 ## Challenges:
 
