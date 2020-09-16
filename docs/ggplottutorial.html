@@ -413,7 +413,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-09-15
+<strong>Last updated:</strong> 2020-09-16
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -504,16 +504,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrockadBioQ6Tutorialstreec112ecbeba52cd10b0d60ef023e51d364509f952targetblankc112ecba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brockad/BioQ6Tutorials/tree/c112ecbeba52cd10b0d60ef023e51d364509f952" target="_blank">c112ecb</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrockadBioQ6Tutorialstreefbff012cb04354a5d24e08ad99973cc2fab3ef78targetblankfbff012a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brockad/BioQ6Tutorials/tree/fbff012cb04354a5d24e08ad99973cc2fab3ef78" target="_blank">fbff012</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcombrockadBioQ6Tutorialstreec112ecbeba52cd10b0d60ef023e51d364509f952targetblankc112ecba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrockadBioQ6Tutorialstreefbff012cb04354a5d24e08ad99973cc2fab3ef78targetblankfbff012a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/brockad/BioQ6Tutorials/tree/c112ecbeba52cd10b0d60ef023e51d364509f952" target="_blank">c112ecb</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/brockad/BioQ6Tutorials/tree/fbff012cb04354a5d24e08ad99973cc2fab3ef78" target="_blank">fbff012</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -560,6 +560,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brockad/BioQ6Tutorials/blob/fbff012cb04354a5d24e08ad99973cc2fab3ef78/analysis/ggplottutorial.Rmd" target="_blank">fbff012</a>
+</td>
+<td>
+brockad
+</td>
+<td>
+2020-09-16
+</td>
+<td>
+wflow_publish(files = “analysis/ggplottutorial.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/brockad/BioQ6Tutorials/df1b99d1d048731500bb3fc039acd40586d663be/docs/ggplottutorial.html" target="_blank">df1b99d</a>
+</td>
+<td>
+brockad
+</td>
+<td>
+2020-09-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -674,12 +708,12 @@ Publishing data and some .Rmd files
 <p>Learning how to explore data and tell stories using ggplot2.</p>
 <p>Load packages:</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>-- Attaching packages ------------------------ tidyverse 1.3.0 --</code></pre>
+<pre><code>-- Attaching packages ---------------------------------------------- tidyverse 1.3.0 --</code></pre>
 <pre><code>v ggplot2 3.3.2     v purrr   0.3.4
 v tibble  3.0.3     v dplyr   1.0.2
 v tidyr   1.1.2     v stringr 1.4.0
 v readr   1.3.1     v forcats 0.5.0</code></pre>
-<pre><code>-- Conflicts --------------------------- tidyverse_conflicts() --
+<pre><code>-- Conflicts ------------------------------------------------- tidyverse_conflicts() --
 x dplyr::filter() masks stats::filter()
 x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(ggplot2)
@@ -825,7 +859,7 @@ p5 &lt;- p4 + scale_color_manual(values = c(&quot;firebrick&quot;, &quot;tomato&
 p5 + scale_x_continuous(trans = &quot;sqrt&quot;)</code></pre>
 <p><img src="figure/ggplottutorial.Rmd/Initial%20Plotting-5.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#Saving a plot
-ggsave(&quot;dogs.pdf&quot;, p5, height = 4, width = 4.5)</code></pre>
+#ggsave(&quot;dogs.pdf&quot;, p5, height = 4, width = 4.5)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
