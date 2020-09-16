@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="brockad" />
+
+<meta name="date" content="2020-09-16" />
+
+<title>statstutorial</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">BioQ6Tutorials</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/brockad/BioQ6Tutorials">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">statstutorial</h1>
+<h4 class="author">brockad</h4>
+<h4 class="date">2020-09-16</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-09-16
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>BioQ6Tutorials/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20200915code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20200915)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20200915code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20200915)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrockadBioQ6Tutorialstreee76843fe0c78de7bca0c5436a4e8403e63df743atargetblanke76843fa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brockad/BioQ6Tutorials/tree/e76843fe0c78de7bca0c5436a4e8403e63df743a" target="_blank">e76843f</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrockadBioQ6Tutorialstreee76843fe0c78de7bca0c5436a4e8403e63df743atargetblanke76843fa" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/brockad/BioQ6Tutorials/tree/e76843fe0c78de7bca0c5436a4e8403e63df743a" target="_blank">e76843f</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/statstutorial.Rmd
+    Untracked:  data/Chicago_Crimes_2016.csv
+    Untracked:  data/FoxEtAl.csv
+    Untracked:  data/Obama_Tweets_2016.csv
+    Untracked:  data/Trump_Tweets_2016.csv
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This tutorial will cover statistical analysis utilizing R, with a focus on working with large data sets.<br />
+</p>
+<p>Load packages:</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>-- Attaching packages ---------------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>v ggplot2 3.3.2     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.2
+v tidyr   1.1.2     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0</code></pre>
+<pre><code>-- Conflicts ------------------------------------------------- tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(qvalue)
+library(utils)</code></pre>
+<p>Here’s the introduction to hypothesis testing with the example of flipping a fair coin 1000 times. The null hypothesis is the contradiction to the hypothesis you would like to “prove”. E.g. if you want to show that one drug is better than another, the null hypothesis is that the drug is the same or worse than the other.<br />
+Simple hypothesis testing:</p>
+<pre class="r"><code>set.seed(222) #Reproducibility
+
+p_coin &lt;- 0.5 #Probability of a head (fair coin)
+
+flips &lt;- 1000 #Number of times we flip the coin
+
+data_coin &lt;- sample(c(&quot;H&quot;, &quot;T&quot;), flips,
+                    prob = c(p_coin, 1 - p_coin),
+                    replace = TRUE)
+
+heads &lt;- sum(data_coin == &quot;H&quot;)
+
+#Alternate method
+#heads &lt;- rbinom(1, flips, p_coin)
+
+one.sided.pvalue &lt;- 1 - pbinom(494, flips, 0.5)
+
+one.sided.pvalue</code></pre>
+<pre><code>[1] 0.6360142</code></pre>
+<pre class="r"><code>heads_distribution &lt;- rbinom(1000, flips,
+                             p_coin)
+pvalue &lt;- binom.test(heads, flips, 0.5,
+                     alternative = &quot;two.sided&quot;)
+
+hist(heads_distribution, main = &quot;distribution number heads&quot;, xlab = &quot;number of heads&quot;)</code></pre>
+<p><img src="figure/statstutorial.Rmd/Coin-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Type I (false positives) and Type II errors (false negatives)</p>
+<p>value distributions:</p>
+<pre class="r"><code>ncoins &lt;- 2500
+
+heads &lt;- rbinom(ncoins, flips, p_coin)
+
+pvalues &lt;- 1 - pbinom(heads, flips, 0.5)
+
+hist(pvalues, xlab = &quot;p-value&quot;, freq = FALSE)
+abline(h = 1, col = &quot;red&quot;, lty = 2)</code></pre>
+<p><img src="figure/statstutorial.Rmd/p-values-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Biased coins:</p>
+<pre class="r"><code>p_b1 &lt;- 0.52 #The coin is biased
+heads_b1 &lt;- rbinom(ncoins, flips, p_b1)
+pvalues &lt;- 1 - pbinom(heads_b1, flips, 0.5)
+hist(pvalues, xlab = &quot;p-value&quot;, freq = FALSE)
+abline(h = 1, col = &quot;red&quot;, lty = 2)</code></pre>
+<p><img src="figure/statstutorial.Rmd/Biased%20coins-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p_b2 &lt;- 0.55 #The coin is biased
+heads_b2 &lt;- rbinom(ncoins, flips, p_b2)
+pvalues &lt;- 1 - pbinom(heads_b2, flips, 0.5)
+hist(pvalues, xlab = &quot;p-value&quot;, freq = FALSE)
+abline(h = 1, col = &quot;red&quot;, lty = 2)</code></pre>
+<p><img src="figure/statstutorial.Rmd/Biased%20coins-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>FWER (family-wise error rate) can account for multiple testing. FWER less than or equal to ma, where m is number of tests and a is p-value significance level. With p-value significance value of 0.05, alpha = 0.05/m.</p>
+<pre class="r"><code>#Bonferroni correction adjusted p-value = number of tests * p-value. This method is VERY stringent
+
+original_pvals &lt;- c(0.012, 0.06, 0.77, 0.001, 0.32)
+adjusted_pvals &lt;- p.adjust(original_pvals, method = &quot;bonferroni&quot;)
+adjusted_pvals</code></pre>
+<pre><code>[1] 0.060 0.300 1.000 0.005 1.000</code></pre>
+<pre class="r"><code>#Holm-bonferroni (or Holm method) is a little more relaxed than the bonferroni method alone</code></pre>
+<p>Example: testing mixed coins</p>
+<pre class="r"><code>toss_coins &lt;- function(p, flips){
+  # toss a coin with probability p of landing on head several times
+  # return a data frame with p, number of heads, pval and 
+  # H0 = TRUE if p = 0.5 and FALSE otherwise
+  heads &lt;- rbinom(1, flips, p)
+  pvalue &lt;- 1 - pbinom(heads, flips, 0.5)
+  if (p == 0.5){
+    return(data.frame(p = p, heads = heads, pval = pvalue, H0 = TRUE))
+  } else {
+    return(data.frame(p = p, heads = heads, pval = pvalue, H0 = FALSE))
+  }
+}
+# To ensure everybody gets the same results, we&#39;re setting the seed
+set.seed(8)
+data &lt;- data.frame()
+# the biased coins
+for (i in 1:50) data &lt;- rbind(data, toss_coins(0.55, 1000))
+# the fair coins
+for (i in 1:950) data &lt;- rbind(data, toss_coins(0.5, 1000))
+# here&#39;s the data structure
+head(data)</code></pre>
+<pre><code>     p heads         pval    H0
+1 0.55   535 1.235282e-02 FALSE
+2 0.55   558 1.061983e-04 FALSE
+3 0.55   567 9.546428e-06 FALSE
+4 0.55   532 1.988964e-02 FALSE
+5 0.55   547 1.322765e-03 FALSE
+6 0.55   574 1.178147e-06 FALSE</code></pre>
+<pre class="r"><code>get_table &lt;- function(data, adjust, alpha = 0.05){
+  # produce a table counting U, V, T and S
+  # after adjusting p-values for multiple comparisons
+  data$pval.adj &lt;- p.adjust(data$pval, method = adjust)
+  data$reject &lt;- FALSE
+  data$reject[data$pval.adj &lt; alpha] &lt;- TRUE
+  return(table(data[,c(&quot;reject&quot;,&quot;H0&quot;)]))
+}
+no_adjustment &lt;- get_table(data, adjust = &quot;none&quot;, 0.05)
+print(no_adjustment)</code></pre>
+<pre><code>       H0
+reject  FALSE TRUE
+  FALSE     2  905
+  TRUE     48   45</code></pre>
+<pre class="r"><code>#Bonferroni correction: Power is only 20% now
+bonferroni &lt;- get_table(data, adjust = &quot;bonferroni&quot;, 0.05)
+print(bonferroni)</code></pre>
+<pre><code>       H0
+reject  FALSE TRUE
+  FALSE    40  950
+  TRUE     10    0</code></pre>
+<pre class="r"><code>#Holm correction: Power is still only 20%
+holm &lt;- get_table(data, adjust = &quot;holm&quot;, 0.05)
+print(holm)</code></pre>
+<pre><code>       H0
+reject  FALSE TRUE
+  FALSE    40  950
+  TRUE     10    0</code></pre>
+<pre class="r"><code>BH &lt;- get_table(data, adjust = &quot;BH&quot;, 0.05)
+print(BH) </code></pre>
+<pre><code>       H0
+reject  FALSE TRUE
+  FALSE    17  946
+  TRUE     33    4</code></pre>
+<p>FDR and q-values are appropriate when you expect a large number of significant results.</p>
+<p>q values:</p>
+<pre class="r"><code>hist(data$pval, breaks = 25)</code></pre>
+<p><img src="figure/statstutorial.Rmd/FDR%20and%20q-values-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>qobj &lt;- qvalue(p = data$pval)
+
+hist(qobj)</code></pre>
+<p><img src="figure/statstutorial.Rmd/FDR%20and%20q-values-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>table((qobj$pvalues &lt; 0.05) &amp; (qobj$qvalues &lt; 0.05), data$H0)</code></pre>
+<pre><code>       
+        FALSE TRUE
+  FALSE    17  946
+  TRUE     33    4</code></pre>
+<p>Linear regression, logistic regression, and model selection<br />
+Linear regression:</p>
+<pre class="r"><code>#Generate data
+set.seed(5)
+x &lt;- 1:20
+y &lt;- 3 + 0.5 * x + rnorm(20)
+plot(y ~ x)
+
+#Generate a model via linear regression
+model1 &lt;- lm(y ~ x)
+summary(model1)</code></pre>
+<pre><code>
+Call:
+lm(formula = y ~ x)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.58733 -0.53439 -0.05563  0.40359  1.76021 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  3.16195    0.42731    7.40 7.31e-07 ***
+x            0.45786    0.03567   12.84 1.70e-10 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.9199 on 18 degrees of freedom
+Multiple R-squared:  0.9015,    Adjusted R-squared:  0.896 
+F-statistic: 164.8 on 1 and 18 DF,  p-value: 1.695e-10</code></pre>
+<pre class="r"><code>plot(y~x)
+points(model1$fitted.values~x, type = &quot;l&quot;, col = &quot;blue&quot;)</code></pre>
+<p><img src="figure/statstutorial.Rmd/Linear%20regression-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Generate polynomial model
+model2 &lt;- lm(y ~ poly(x, 7))
+
+#Compare the models
+summary(model1)</code></pre>
+<pre><code>
+Call:
+lm(formula = y ~ x)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.58733 -0.53439 -0.05563  0.40359  1.76021 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  3.16195    0.42731    7.40 7.31e-07 ***
+x            0.45786    0.03567   12.84 1.70e-10 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.9199 on 18 degrees of freedom
+Multiple R-squared:  0.9015,    Adjusted R-squared:  0.896 
+F-statistic: 164.8 on 1 and 18 DF,  p-value: 1.695e-10</code></pre>
+<pre class="r"><code>summary(model2)</code></pre>
+<pre><code>
+Call:
+lm(formula = y ~ poly(x, 7))
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.6066 -0.4714 -0.1719  0.4577  1.6960 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  7.96944    0.23826  33.448 3.24e-13 ***
+poly(x, 7)1 11.80701    1.06553  11.081 1.17e-07 ***
+poly(x, 7)2 -0.13536    1.06553  -0.127    0.901    
+poly(x, 7)3  0.82397    1.06553   0.773    0.454    
+poly(x, 7)4  0.28455    1.06553   0.267    0.794    
+poly(x, 7)5  0.81336    1.06553   0.763    0.460    
+poly(x, 7)6 -0.40726    1.06553  -0.382    0.709    
+poly(x, 7)7  0.03159    1.06553   0.030    0.977    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 1.066 on 12 degrees of freedom
+Multiple R-squared:  0.9119,    Adjusted R-squared:  0.8605 
+F-statistic: 17.74 on 7 and 12 DF,  p-value: 1.917e-05</code></pre>
+<pre class="r"><code>plot(y~x)
+points(model1$fitted.values~x, type = &quot;l&quot;, col = &quot;blue&quot;)
+points(model2$fitted.values~x, type = &quot;l&quot;, col = &quot;red&quot;)</code></pre>
+<p><img src="figure/statstutorial.Rmd/Linear%20regression-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Log-likelihood, measure fit to models
+logLik(model1)</code></pre>
+<pre><code>&#39;log Lik.&#39; -25.65474 (df=3)</code></pre>
+<pre class="r"><code>logLik(model2)</code></pre>
+<pre><code>&#39;log Lik.&#39; -24.54 (df=9)</code></pre>
+<pre class="r"><code>#AIC Smaller values are &quot;better&quot;
+AIC(model1)</code></pre>
+<pre><code>[1] 57.30948</code></pre>
+<pre class="r"><code>AIC(model2)</code></pre>
+<pre><code>[1] 67.08001</code></pre>
+<pre class="r"><code>#BIC Smaller values are &quot;better&quot;
+BIC(model1)</code></pre>
+<pre><code>[1] 60.29667</code></pre>
+<pre class="r"><code>BIC(model2)</code></pre>
+<pre><code>[1] 76.0416</code></pre>
+<pre class="r"><code># read the data
+reviews &lt;- read.csv(&quot;data/FoxEtAl.csv&quot;, sep = &quot;\t&quot;)
+# take a peek
+head(reviews)</code></pre>
+<pre><code>  Sort   Journal  msID Year ReviewerID ReviewerInvited ReviewerResponded
+1    1 Evolution 34152 2007    8426852               1                 1
+2    2 Evolution 34152 2007    8425970               1                 1
+3    3 Evolution 34152 2007    8425116               1                 1
+4    4 Evolution 34152 2007    8426128               1                 1
+5    5 Evolution 34152 2007    9327585               1                 1
+6    6 Evolution 34152 2007    8423528               1                 1
+  ReviewerAgreed ReviewerAssigned ReviewSubmitted
+1              0                0              NA
+2              0                0              NA
+3              0                0              NA
+4              0                0              NA
+5              1                1               1
+6              0                0              NA</code></pre>
+<pre class="r"><code># set NAs to 0
+reviews[is.na(reviews)] &lt;- 0
+# how big is the data?
+dim(reviews)</code></pre>
+<pre><code>[1] 113876     10</code></pre>
+<pre class="r"><code># that&#39;s a lot! Let&#39;s take 5000 review invitations for our explorations; 
+# we will fit the whole data set later
+set.seed(101)
+small &lt;- reviews[order(runif(nrow(reviews))),][1:5000,]
+
+#Constant rate
+# suppose the rate at which reviewers agree is a constant
+mean(small$ReviewerAgreed)</code></pre>
+<pre><code>[1] 0.466</code></pre>
+<pre class="r"><code># fit a logistic regression
+model_null &lt;- glm(ReviewerAgreed~1, data = small, family = &quot;binomial&quot;)
+summary(model_null)</code></pre>
+<pre><code>
+Call:
+glm(formula = ReviewerAgreed ~ 1, family = &quot;binomial&quot;, data = small)
+
+Deviance Residuals: 
+   Min      1Q  Median      3Q     Max  
+-1.120  -1.120  -1.120   1.236   1.236  
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -0.13621    0.02835  -4.805 1.55e-06 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 6908.3  on 4999  degrees of freedom
+Residual deviance: 6908.3  on 4999  degrees of freedom
+AIC: 6910.3
+
+Number of Fisher Scoring iterations: 3</code></pre>
+<pre class="r"><code># interpretation:
+exp(model_null$coefficients[1]) / (1 + exp(model_null$coefficients[1]))</code></pre>
+<pre><code>(Intercept) 
+      0.466 </code></pre>
+<pre class="r"><code>#Declining trend
+# Take 2003 as baseline
+model_year &lt;- glm(ReviewerAgreed~I(Year - 2003), data = small, family = &quot;binomial&quot;) 
+#The I() function acts to convert the argument to &quot;as.is&quot;
+summary(model_year)</code></pre>
+<pre><code>
+Call:
+glm(formula = ReviewerAgreed ~ I(Year - 2003), family = &quot;binomial&quot;, 
+    data = small)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.3441  -1.0879  -0.9686   1.2372   1.4017  
+
+Coefficients:
+                Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)     0.383697   0.065482   5.860 4.64e-09 ***
+I(Year - 2003) -0.074753   0.008491  -8.804  &lt; 2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 6908.3  on 4999  degrees of freedom
+Residual deviance: 6829.7  on 4998  degrees of freedom
+AIC: 6833.7
+
+Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>#Journal dependence
+# Take the first journal as baseline
+model_journal &lt;- glm(ReviewerAgreed~Journal, data = small, family = &quot;binomial&quot;)
+summary(model_journal)</code></pre>
+<pre><code>
+Call:
+glm(formula = ReviewerAgreed ~ Journal, family = &quot;binomial&quot;, 
+    data = small)
+
+Deviance Residuals: 
+   Min      1Q  Median      3Q     Max  
+-1.208  -1.110  -1.033   1.247   1.329  
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)   
+(Intercept)   0.07187    0.06812   1.055  0.29141   
+JournalFE    -0.27908    0.09411  -2.965  0.00302 **
+JournalJANIM -0.16544    0.09598  -1.724  0.08476 . 
+JournalJAPPL -0.23319    0.09323  -2.501  0.01237 * 
+JournalJECOL -0.26183    0.09403  -2.785  0.00536 **
+JournalMEE   -0.42223    0.12868  -3.281  0.00103 **
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 6908.3  on 4999  degrees of freedom
+Residual deviance: 6892.7  on 4994  degrees of freedom
+AIC: 6904.7
+
+Number of Fisher Scoring iterations: 3</code></pre>
+<pre class="r"><code>#Model journal and year
+# Take the first journal as baseline, the colon mark stands for interaction term only.
+model_journal_yr &lt;- glm(ReviewerAgreed~Journal:I(Year-2003), 
+                        data = small, family = &quot;binomial&quot;)
+#summary(model_journal_yr)
+
+#Likelihoods
+logLik(model_null)</code></pre>
+<pre><code>&#39;log Lik.&#39; -3454.167 (df=1)</code></pre>
+<pre class="r"><code>logLik(model_year)</code></pre>
+<pre><code>&#39;log Lik.&#39; -3414.845 (df=2)</code></pre>
+<pre class="r"><code>logLik(model_journal)</code></pre>
+<pre><code>&#39;log Lik.&#39; -3446.335 (df=6)</code></pre>
+<pre class="r"><code>logLik(model_journal_yr)</code></pre>
+<pre><code>&#39;log Lik.&#39; -3395.365 (df=7)</code></pre>
+<pre class="r"><code>#AIC
+AIC(model_null)</code></pre>
+<pre><code>[1] 6910.334</code></pre>
+<pre class="r"><code>AIC(model_year)</code></pre>
+<pre><code>[1] 6833.691</code></pre>
+<pre class="r"><code>AIC(model_journal)</code></pre>
+<pre><code>[1] 6904.669</code></pre>
+<pre class="r"><code>AIC(model_journal_yr)</code></pre>
+<pre><code>[1] 6804.73</code></pre>
+<pre class="r"><code>#BIC
+BIC(model_null)</code></pre>
+<pre><code>[1] 6916.851</code></pre>
+<pre class="r"><code>BIC(model_year)</code></pre>
+<pre><code>[1] 6846.725</code></pre>
+<pre class="r"><code>BIC(model_journal)</code></pre>
+<pre><code>[1] 6943.772</code></pre>
+<pre class="r"><code>BIC(model_journal_yr)</code></pre>
+<pre><code>[1] 6850.35</code></pre>
+<pre class="r"><code>#Cross validation
+reviews$cv &lt;- sample(1:3, nrow(reviews), prob = c(0.05, 0.75, 0.2), replace = TRUE)
+dataexplore &lt;- reviews[reviews$cv == 1,]
+datafit &lt;- reviews[reviews$cv == 2,]
+datatest &lt;- reviews[reviews$cv == 3,]
+# We&#39;ve already done our exploration. 
+# Let&#39;s fit the data using model_journal
+# and model_journal_yr, which seem to be the most promising
+cv_model1 &lt;- glm(ReviewerAgreed~I(Year-2003), data = datafit, family = &quot;binomial&quot;)
+cv_model2 &lt;- glm(ReviewerAgreed~Journal:I(Year-2003), data = datafit,
+      family = &quot;binomial&quot;)
+
+mymodel &lt;- cv_model1
+# compute probabilities
+pi &lt;- predict(mymodel, newdata = datatest, type = &quot;resp&quot;)
+# compute log likelihood
+mylogLik &lt;- sum(datatest$ReviewerAgreed * log(pi) + 
+                  (1 - datatest$ReviewerAgreed) * log(1 - pi))
+print(mylogLik)</code></pre>
+<pre><code>[1] -15520.91</code></pre>
+<pre class="r"><code>mymodel &lt;- cv_model2
+# compute probabilities
+pi &lt;- predict(mymodel, newdata = datatest, type = &quot;resp&quot;)
+# compute log likelihood
+mylogLik &lt;- sum(datatest$ReviewerAgreed * log(pi) + 
+                  (1 - datatest$ReviewerAgreed) * log(1 - pi))
+print(mylogLik)</code></pre>
+<pre><code>[1] -15473.93</code></pre>
+<p>Challenge:</p>
+<pre class="r"><code>#Example code
+#read the Dataset sheet into “R”. The dataset will be called &quot;data&quot;.
+data &lt;- read.csv(&quot;https://opendata.ecdc.europa.eu/covid19/casedistribution/csv&quot;, 
+                 na.strings = &quot;&quot;, fileEncoding = &quot;UTF-8-BOM&quot;)
+# the code below shows how you may recode the country name&#39;s 
+# first letter to a numeric alphabetic position.
+data1 &lt;- data[(data$dateRep==&quot;11/08/2020&quot;), ]  
+CountryAb &lt;- as.integer(as.factor(substr(data1$countriesAndTerritories,1,1)))
+# build a linear model for the relationship between 
+# Cumulative_number_for_14_days_of_COVID.19_cases_per_100000 and 
+# the alphabetic position of country name&#39;s first letter.
+model1&lt;- lm(Cumulative_number_for_14_days_of_COVID.19_cases_per_100000~CountryAb, 
+            data=data1)
+summary(model1)</code></pre>
+<pre><code>
+Call:
+lm(formula = Cumulative_number_for_14_days_of_COVID.19_cases_per_100000 ~ 
+    CountryAb, data = data1)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-53.39 -44.93 -35.41   7.73 427.28 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  53.8412    10.0520   5.356 2.25e-07 ***
+CountryAb    -0.4541     0.7908  -0.574    0.566    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 78.74 on 207 degrees of freedom
+Multiple R-squared:  0.00159,   Adjusted R-squared:  -0.003233 
+F-statistic: 0.3297 on 1 and 207 DF,  p-value: 0.5664</code></pre>
+<pre class="r"><code># On 8/11/2020, we did not find a significant relationship 
+# between alphabetic order of country name and COVID-19 cases. 
+# But what if we keep looking at other dates? </code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 18363)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] qvalue_2.20.0   forcats_0.5.0   stringr_1.4.0   dplyr_1.0.2    
+ [5] purrr_0.3.4     readr_1.3.1     tidyr_1.1.2     tibble_3.0.3   
+ [9] ggplot2_3.3.2   tidyverse_1.3.0
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.1.0 xfun_0.17        reshape2_1.4.4   splines_4.0.2   
+ [5] haven_2.3.1      colorspace_1.4-1 vctrs_0.3.4      generics_0.0.2  
+ [9] htmltools_0.5.0  yaml_2.2.1       blob_1.2.1       rlang_0.4.7     
+[13] later_1.1.0.1    pillar_1.4.6     withr_2.2.0      glue_1.4.2      
+[17] DBI_1.1.0        dbplyr_1.4.4     modelr_0.1.8     readxl_1.3.1    
+[21] plyr_1.8.6       lifecycle_0.2.0  munsell_0.5.0    gtable_0.3.0    
+[25] workflowr_1.6.2  cellranger_1.1.0 rvest_0.3.6      evaluate_0.14   
+[29] labeling_0.3     knitr_1.29       httpuv_1.5.4     fansi_0.4.1     
+[33] broom_0.7.0      Rcpp_1.0.5       promises_1.1.1   backports_1.1.9 
+[37] scales_1.1.1     jsonlite_1.7.1   farver_2.0.3     fs_1.5.0        
+[41] hms_0.5.3        digest_0.6.25    stringi_1.5.3    rprojroot_1.3-2 
+[45] grid_4.0.2       cli_2.0.2        tools_4.0.2      magrittr_1.5    
+[49] crayon_1.3.4     pkgconfig_2.0.3  ellipsis_0.3.1   xml2_1.3.2      
+[53] reprex_0.3.0     lubridate_1.7.9  assertthat_0.2.1 rmarkdown_2.3   
+[57] httr_1.4.2       rstudioapi_0.11  R6_2.4.1         git2r_0.27.1    
+[61] compiler_4.0.2  </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

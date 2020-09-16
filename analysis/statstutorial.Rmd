@@ -1,0 +1,296 @@
+---
+title: "statstutorial"
+author: "brockad"
+date: "2020-09-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+This tutorial will cover statistical analysis utilizing R, with a focus on working with large data sets.\
+
+Load packages:
+```{r Packages}
+library(tidyverse)
+library(qvalue)
+library(utils)
+```
+
+Here's the introduction to hypothesis testing with the example of flipping a fair coin 1000 times. The null hypothesis is the contradiction to the hypothesis you would like to "prove". E.g. if you want to show that one drug is better than another, the null hypothesis is that the drug is the same or worse than the other.\
+Simple hypothesis testing:
+```{r Coin}
+set.seed(222) #Reproducibility
+
+p_coin <- 0.5 #Probability of a head (fair coin)
+
+flips <- 1000 #Number of times we flip the coin
+
+data_coin <- sample(c("H", "T"), flips,
+                    prob = c(p_coin, 1 - p_coin),
+                    replace = TRUE)
+
+heads <- sum(data_coin == "H")
+
+#Alternate method
+#heads <- rbinom(1, flips, p_coin)
+
+one.sided.pvalue <- 1 - pbinom(494, flips, 0.5)
+
+one.sided.pvalue
+
+heads_distribution <- rbinom(1000, flips,
+                             p_coin)
+pvalue <- binom.test(heads, flips, 0.5,
+                     alternative = "two.sided")
+
+hist(heads_distribution, main = "distribution number heads", xlab = "number of heads")
+```
+
+Type I (false positives) and Type II errors (false negatives) 
+
+\P value distributions:
+```{r p-values}
+ncoins <- 2500
+
+heads <- rbinom(ncoins, flips, p_coin)
+
+pvalues <- 1 - pbinom(heads, flips, 0.5)
+
+hist(pvalues, xlab = "p-value", freq = FALSE)
+abline(h = 1, col = "red", lty = 2)
+```
+
+Biased coins:
+```{r Biased coins}
+p_b1 <- 0.52 #The coin is biased
+heads_b1 <- rbinom(ncoins, flips, p_b1)
+pvalues <- 1 - pbinom(heads_b1, flips, 0.5)
+hist(pvalues, xlab = "p-value", freq = FALSE)
+abline(h = 1, col = "red", lty = 2)
+
+p_b2 <- 0.55 #The coin is biased
+heads_b2 <- rbinom(ncoins, flips, p_b2)
+pvalues <- 1 - pbinom(heads_b2, flips, 0.5)
+hist(pvalues, xlab = "p-value", freq = FALSE)
+abline(h = 1, col = "red", lty = 2)
+```
+
+FWER (family-wise error rate) can account for multiple testing. FWER less than or equal to ma, where m is number of tests and a is p-value significance level. With p-value significance value of 0.05, alpha = 0.05/m.
+```{r Multiple comparisons}
+#Bonferroni correction adjusted p-value = number of tests * p-value. This method is VERY stringent
+
+original_pvals <- c(0.012, 0.06, 0.77, 0.001, 0.32)
+adjusted_pvals <- p.adjust(original_pvals, method = "bonferroni")
+adjusted_pvals
+
+#Holm-bonferroni (or Holm method) is a little more relaxed than the bonferroni method alone
+
+```
+
+Example: testing mixed coins
+```{r}
+toss_coins <- function(p, flips){
+  # toss a coin with probability p of landing on head several times
+  # return a data frame with p, number of heads, pval and 
+  # H0 = TRUE if p = 0.5 and FALSE otherwise
+  heads <- rbinom(1, flips, p)
+  pvalue <- 1 - pbinom(heads, flips, 0.5)
+  if (p == 0.5){
+    return(data.frame(p = p, heads = heads, pval = pvalue, H0 = TRUE))
+  } else {
+    return(data.frame(p = p, heads = heads, pval = pvalue, H0 = FALSE))
+  }
+}
+# To ensure everybody gets the same results, we're setting the seed
+set.seed(8)
+data <- data.frame()
+# the biased coins
+for (i in 1:50) data <- rbind(data, toss_coins(0.55, 1000))
+# the fair coins
+for (i in 1:950) data <- rbind(data, toss_coins(0.5, 1000))
+# here's the data structure
+head(data)
+
+get_table <- function(data, adjust, alpha = 0.05){
+  # produce a table counting U, V, T and S
+  # after adjusting p-values for multiple comparisons
+  data$pval.adj <- p.adjust(data$pval, method = adjust)
+  data$reject <- FALSE
+  data$reject[data$pval.adj < alpha] <- TRUE
+  return(table(data[,c("reject","H0")]))
+}
+no_adjustment <- get_table(data, adjust = "none", 0.05)
+print(no_adjustment)
+
+#Bonferroni correction: Power is only 20% now
+bonferroni <- get_table(data, adjust = "bonferroni", 0.05)
+print(bonferroni)
+
+#Holm correction: Power is still only 20%
+holm <- get_table(data, adjust = "holm", 0.05)
+print(holm)
+
+BH <- get_table(data, adjust = "BH", 0.05)
+print(BH) 
+```
+
+FDR and q-values are appropriate when you expect a large number of significant results.
+
+q values:
+```{r FDR and q-values}
+hist(data$pval, breaks = 25)
+
+qobj <- qvalue(p = data$pval)
+
+hist(qobj)
+
+table((qobj$pvalues < 0.05) & (qobj$qvalues < 0.05), data$H0)
+```
+
+Linear regression, logistic regression, and model selection\
+Linear regression:
+```{r Linear regression}
+#Generate data
+set.seed(5)
+x <- 1:20
+y <- 3 + 0.5 * x + rnorm(20)
+plot(y ~ x)
+
+#Generate a model via linear regression
+model1 <- lm(y ~ x)
+summary(model1)
+plot(y~x)
+points(model1$fitted.values~x, type = "l", col = "blue")
+
+#Generate polynomial model
+model2 <- lm(y ~ poly(x, 7))
+
+#Compare the models
+summary(model1)
+summary(model2)
+plot(y~x)
+points(model1$fitted.values~x, type = "l", col = "blue")
+points(model2$fitted.values~x, type = "l", col = "red")
+
+#Log-likelihood, measure fit to models
+logLik(model1)
+logLik(model2)
+
+#AIC Smaller values are "better"
+AIC(model1)
+AIC(model2)
+
+#BIC Smaller values are "better"
+BIC(model1)
+BIC(model2)
+```
+
+```{r Logistic regression, message = FALSE}
+# read the data
+reviews <- read.csv("data/FoxEtAl.csv", sep = "\t")
+# take a peek
+head(reviews)
+# set NAs to 0
+reviews[is.na(reviews)] <- 0
+# how big is the data?
+dim(reviews)
+# that's a lot! Let's take 5000 review invitations for our explorations; 
+# we will fit the whole data set later
+set.seed(101)
+small <- reviews[order(runif(nrow(reviews))),][1:5000,]
+
+#Constant rate
+# suppose the rate at which reviewers agree is a constant
+mean(small$ReviewerAgreed)
+# fit a logistic regression
+model_null <- glm(ReviewerAgreed~1, data = small, family = "binomial")
+summary(model_null)
+# interpretation:
+exp(model_null$coefficients[1]) / (1 + exp(model_null$coefficients[1]))
+
+#Declining trend
+# Take 2003 as baseline
+model_year <- glm(ReviewerAgreed~I(Year - 2003), data = small, family = "binomial") 
+#The I() function acts to convert the argument to "as.is"
+summary(model_year)
+
+#Journal dependence
+# Take the first journal as baseline
+model_journal <- glm(ReviewerAgreed~Journal, data = small, family = "binomial")
+summary(model_journal)
+
+#Model journal and year
+# Take the first journal as baseline, the colon mark stands for interaction term only.
+model_journal_yr <- glm(ReviewerAgreed~Journal:I(Year-2003), 
+                        data = small, family = "binomial")
+#summary(model_journal_yr)
+
+#Likelihoods
+logLik(model_null)
+logLik(model_year)
+logLik(model_journal)
+logLik(model_journal_yr)
+
+#AIC
+AIC(model_null)
+AIC(model_year)
+AIC(model_journal)
+AIC(model_journal_yr)
+
+#BIC
+BIC(model_null)
+BIC(model_year)
+BIC(model_journal)
+BIC(model_journal_yr)
+
+#Cross validation
+reviews$cv <- sample(1:3, nrow(reviews), prob = c(0.05, 0.75, 0.2), replace = TRUE)
+dataexplore <- reviews[reviews$cv == 1,]
+datafit <- reviews[reviews$cv == 2,]
+datatest <- reviews[reviews$cv == 3,]
+# We've already done our exploration. 
+# Let's fit the data using model_journal
+# and model_journal_yr, which seem to be the most promising
+cv_model1 <- glm(ReviewerAgreed~I(Year-2003), data = datafit, family = "binomial")
+cv_model2 <- glm(ReviewerAgreed~Journal:I(Year-2003), data = datafit,
+      family = "binomial")
+
+mymodel <- cv_model1
+# compute probabilities
+pi <- predict(mymodel, newdata = datatest, type = "resp")
+# compute log likelihood
+mylogLik <- sum(datatest$ReviewerAgreed * log(pi) + 
+                  (1 - datatest$ReviewerAgreed) * log(1 - pi))
+print(mylogLik)
+
+mymodel <- cv_model2
+# compute probabilities
+pi <- predict(mymodel, newdata = datatest, type = "resp")
+# compute log likelihood
+mylogLik <- sum(datatest$ReviewerAgreed * log(pi) + 
+                  (1 - datatest$ReviewerAgreed) * log(1 - pi))
+print(mylogLik)
+```
+
+Challenge:
+```{r Challenge}
+#Example code
+#read the Dataset sheet into “R”. The dataset will be called "data".
+data <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", 
+                 na.strings = "", fileEncoding = "UTF-8-BOM")
+# the code below shows how you may recode the country name's 
+# first letter to a numeric alphabetic position.
+data1 <- data[(data$dateRep=="11/08/2020"), ]  
+CountryAb <- as.integer(as.factor(substr(data1$countriesAndTerritories,1,1)))
+# build a linear model for the relationship between 
+# Cumulative_number_for_14_days_of_COVID.19_cases_per_100000 and 
+# the alphabetic position of country name's first letter.
+model1<- lm(Cumulative_number_for_14_days_of_COVID.19_cases_per_100000~CountryAb, 
+            data=data1)
+summary(model1)
+# On 8/11/2020, we did not find a significant relationship 
+# between alphabetic order of country name and COVID-19 cases. 
+# But what if we keep looking at other dates? 
+```
+
