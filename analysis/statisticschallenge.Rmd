@@ -1,0 +1,47 @@
+---
+title: "statisticschallenge"
+author: "brockad"
+date: "2020-09-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+Load Packages:
+```{r Package loading}
+library(tidyverse)
+library(qvalue)
+```
+
+
+Sample code from tutorial:
+```{r Sample}
+#Example code
+#read the Dataset sheet into “R”. The dataset will be called "data".
+data <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", 
+                 na.strings = "", fileEncoding = "UTF-8-BOM")
+# the code below shows how you may recode the country name's 
+# first letter to a numeric alphabetic position.
+data1 <- data[(data$dateRep=="11/08/2020"), ]  
+CountryAb <- as.integer(as.factor(substr(data1$countriesAndTerritories,1,1)))
+# build a linear model for the relationship between 
+# Cumulative_number_for_14_days_of_COVID.19_cases_per_100000 and 
+# the alphabetic position of country name's first letter.
+model1<- lm(Cumulative_number_for_14_days_of_COVID.19_cases_per_100000~CountryAb, 
+            data=data1)
+summary(model1)
+# On 8/11/2020, we did not find a significant relationship 
+# between alphabetic order of country name and COVID-19 cases. 
+# But what if we keep looking at other dates? 
+```
+
+Suggestions for p-hacking:\
+log transformations, narrowing dates, looking at subgroups ("green jelly bean")\
+
+Attempts:
+```{r Inadvertent p-hacking challenge}
+#Let's transform to a tible for some tidyverse functionalities
+data <- as_tibble(data)
+```
+

@@ -1,0 +1,66 @@
+---
+title: "computingchallengeII"
+author: "brockad"
+date: "2020-09-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r Package loading}
+library(tidyverse)
+library(cowplot)
+library(lubridate)
+```
+
+```{r Challenge part 1}
+temp <- tempfile()
+download.file("https://raw.githubusercontent.com/jnovembre/BSD-QBio6/master/tutorials/basic_computing_2/PreisMoat2014.csv", destfile = temp, mode = "wb")
+gf <- read_csv(temp)
+unlink(temp)
+
+gf %>%
+  ggplot(aes(x = WeeklyOutpatientVisitsforILI, y = GoogleFluTrends)) +
+  geom_point() + theme_cowplot()
+
+```
+
+```{r Challenge part 2}
+#Calculate the Pearson's correlation using the cor function
+cor(x = gf$WeeklyOutpatientVisitsforILI, y = gf$GoogleFluTrends, method = "pearson")
+```
+
+```{r Challenge part 3}
+gf_date <- gf %>%
+  mutate(year = year(WeekCommencing), month = month(WeekCommencing)) %>%
+  group_by(year, month) %>%
+  mutate(cor = cor(WeeklyOutpatientVisitsforILI, GoogleFluTrends)) %>%
+  ungroup() %>% view()
+
+#Code to look at August and September case only
+gf_date %>%
+  filter(month == 8 | month == 9) %>%
+  select(year, month, cor) %>%
+  distinct() %>% 
+  arrange(desc(cor)) %>%
+  head(20)
+
+#Visualize the data
+gf_date %>% 
+  ggplot(aes(x = as.Date(WeekCommencing), y = cor, 
+             color = as.factor(year))) +
+  geom_line() + 
+  geom_hline(yintercept = 0.99999229, linetype = "dotted") + 
+  theme_cowplot() +
+  scale_x_date(date_breaks = "4 month") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.6),
+        legend.title = element_blank()) +
+  labs(x = "Date",
+       y = "Correlation, \nILI Visits and Google Trends",
+       title = "Weekly Correlation between ILI Visits \nand Google Flu Trends")
+
+#Answer: No correlation was higher than that in September of 2013
+```
+

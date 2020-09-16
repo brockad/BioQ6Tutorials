@@ -1,0 +1,101 @@
+---
+title: "computingchallengeI"
+author: "brockad"
+date: "2020-09-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+This is the basic computing I challenge from [qBio6]()
+
+```{r Package loading}
+library(tidyverse)
+```
+
+```{r File download and data tidying}
+temp <- tempfile()
+download.file("https://raw.githubusercontent.com/jnovembre/BSD-QBio6/master/tutorials/basic_computing_1/nobel_nominations.csv",temp, mode = "wb")
+  
+nobel_nominations <- read_csv(file = temp, col_names = c("field", "year", "id_name"))
+
+unlink(temp)
+```
+
+## Challenges
+
+1. Take Chemistry (`Che`). Who received the most nominations?
+
+2. Find all researchers who received nominations in more than one
+   field.
+
+3. Take Physics (`Phy`). Which year had the largest number of nominees?
+
+4. For each field, what is the average number of nominees per year?
+   Calculate the number of nominees in each field and year, and take
+   the average across all years.
+
+```{r Challenge part 1}
+#Who has received the most nominations?
+#Strategy: Filter field to only contain `Che`, group by author and count
+
+nobel_nominations %>%
+  filter(field == "Che") %>%
+  group_by(id_name) %>%
+  summarise(total_nominations = n()) %>% 
+  ungroup() %>%
+  arrange(desc(total_nominations)) %>%
+  head(20)
+
+```
+
+```{r Challenge part 2}
+##Which researchers have nominations in more than one field?
+
+nobel_nominations %>%
+  select(field, id_name) %>%
+  distinct() %>%
+  group_by(id_name) %>%
+  mutate("total_fields" = n()) %>%
+  ungroup() %>%
+  filter(total_fields > 1) %>% 
+  select(id_name, total_fields) %>%
+  distinct() %>% view() %>%
+  nrow()
+
+#Answer is 177
+```
+
+```{r Challenge part 3}
+#Which year had the largest number of Physics nominees?
+
+nobel_nominations %>%
+  select(field, year) %>% 
+  filter(field == "Phy") %>%
+  group_by(year) %>%
+  mutate(nom_year = n()) %>%
+  ungroup() %>%
+  distinct() %>%
+  arrange(desc(nom_year)) %>%
+  head(20)
+
+#Answer is 1957 and 1963
+```
+
+```{r Challenge part 4}
+#For each field, what is the average number of nominees per year?
+
+nobel_nominations %>%
+  select(field, year) %>%
+  group_by(field, year) %>%
+  summarise("nom_field_year" = n()) %>%
+  ungroup() %>%
+  group_by(field) %>% 
+  mutate("avg_nom_field_year" = mean(nom_field_year)) %>%
+  select(field, avg_nom_field_year) %>%
+  distinct() %>%
+  head(5)
+
+```
+
