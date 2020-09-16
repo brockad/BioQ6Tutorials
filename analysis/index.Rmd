@@ -22,9 +22,9 @@ Welcome to my **first** research website. This page will house links to the vari
 
 ## Challenges:
 
-[ <font size="4"> Basic Computing I](computingchallengeI.html)
-[ <font size="4"> Basic Computing II](computingchllengeII.html)
-[ <font size="4">Busayo's Webpage: CLICK HERE FOR REPRODUCIBILITY CHALLENGE</font>](https://busayob.github.io/myproject/)
-[ <font size="4">Visualization Challenge</font>](visualizationchallenge.html)
-[ <font size="4">Statistics  Challenge</font>](statisticschallenge.html)
+[ <font size="4"> Basic Computing I](computingchallengeI.html)\
+[ <font size="4"> Basic Computing II](computingchllengeII.html)\
+[ <font size="4">Busayo's Webpage: CLICK HERE FOR REPRODUCIBILITY CHALLENGE</font>](https://busayob.github.io/myproject/)\
+[ <font size="4">Visualization Challenge</font>](visualizationchallenge.html)\
+[ <font size="4">Statistics  Challenge</font>](statisticschallenge.html)\
 
