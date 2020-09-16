@@ -82,7 +82,7 @@ p5 <- p4 + scale_color_manual(values = c("firebrick", "tomato"),
 p5 + scale_x_continuous(trans = "sqrt")
 
 #Saving a plot
-ggsave("dogs.pdf", p5, height = 4, width = 4.5)
+#ggsave("dogs.pdf", p5, height = 4, width = 4.5)
 ```
 
 
