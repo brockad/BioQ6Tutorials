@@ -13,21 +13,21 @@ Welcome to my **first** research website. This page will house links to the vari
 
 ## Tutorials:
 
-[Data Jiu Jitsu](jiujitsu.html)\
-[Reproducibility: ToothGrowth](toothgrowth.html)\
-[Data Visualization](ggplottutorial.html)\
-[Statistics](statstutorial.html)
+* [Data Jiu Jitsu](jiujitsu.html)\
+* [Reproducibility: ToothGrowth](toothgrowth.html)\
+* [Data Visualization](ggplottutorial.html)\
+* [Statistics](statstutorial.html)
 
 ## Workshops:
 
-[Computational Immunobiology](immunobiology.html)
-[Poputlation Genetics](populationgenetics.html)
+* [Computational Immunobiology](immunobiology.html)\
+* [Poputlation Genetics](populationgenetics.html)
 
 ## Challenges:
 
-[ Basic Computing I](computingchallengeI.html)\
-[ Basic Computing II](computingchallengeII.html)\
-[ <font size="4">Busayo's Webpage: CLICK HERE FOR REPRODUCIBILITY CHALLENGE</font>](https://busayob.github.io/myproject/)\
-[ Visualization Challenge](visualizationchallenge.html)\
-[ Statistics  Challenge](statisticschallenge.html)\
+* [ Basic Computing I](computingchallengeI.html)\
+* [ Basic Computing II](computingchallengeII.html)\
+* [ <font size="4">Busayo's Webpage: CLICK HERE FOR REPRODUCIBILITY CHALLENGE</font>](https://busayob.github.io/myproject/)\
+* [ Visualization Challenge](visualizationchallenge.html)\
+* [ Statistics  Challenge](statisticschallenge.html)\
 
