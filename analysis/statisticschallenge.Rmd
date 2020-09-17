@@ -41,7 +41,22 @@ log transformations, narrowing dates, looking at subgroups ("green jelly bean")\
 
 Attempts:
 ```{r Inadvertent p-hacking challenge}
-#Let's transform to a tible for some tidyverse functionalities
-data <- as_tibble(data)
+#Looking at number of vowels in countries and territories that contain a y in name
+#versus cases to create significant data. Had to modulate month and day of month
+p1 <- data %>%
+  filter(month == 7, day == 8, grepl("y|Y",countriesAndTerritories)) %>%
+  group_by(countriesAndTerritories) %>%
+  mutate(July8th_cases = sum(cases), 
+         country_vowels = str_count(countriesAndTerritories, 
+                                  pattern = "A|E|I|O|U|W|Y|a|e|i|o|u|w|y")) %>%
+  ungroup() %>%
+  select(July8th_cases, country_vowels) %>%
+  distinct()
+
+model_vowel <- lm(p1$July8th_cases ~ p1$country_vowels)
+summary(model_vowel)
+plot(p1$July8th_cases ~ p1$country_vowels)
+points(model_vowel$fitted.values~p1$country_vowels, type = "l", col = "blue")
+#p-value 0.04551
 ```
 
