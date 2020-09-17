@@ -13,12 +13,10 @@ Welcome to my **first** research website. This page will house links to the vari
 
 ## Tutorials:
 
-[Data Jiu Jitsu I]\
-[Data Jiu Jitsu II]\
-[Data Jiu Jitsu III]\
+[Data Jiu Jitsu](jiujitsu.html)\
 [Reproducibility: ToothGrowth](toothgrowth.html)\
 [Data Visualization](ggplottutorial.html)\
-[Statistics](statstutorial.html)\
+[Statistics](statstutorial.html)
 
 ## Workshops:
 
