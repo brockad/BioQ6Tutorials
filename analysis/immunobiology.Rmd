@@ -1,0 +1,139 @@
+---
+title: "immunobiology"
+author: "brockad"
+date: "2020-09-17"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r Package loading}
+library(tidyverse)
+library(Rtsne)
+library(ggseqlogo)
+```
+
+## Exercise 1.1
+Loading and tidying data:
+```{r Loading Data}
+geo <- read.csv("data/GSE116500_Limma_adj_4.csv.gz", row.names = 1, header = TRUE)
+
+#Number of rows (genes) and columns (cells)
+dim(geo)
+num_genes <- dim(geo)[1]
+num_cells <- dim(geo)[2]
+
+geo <- t(geo)
+dim(geo)
+
+VARs <- apply(geo, 2, var)
+
+hist(VARs)
+
+hvgs <- names(sort(VARs, decreasing = TRUE))[1:2000]
+geo.hvg <- as.data.frame(geo[,hvgs])
+dim(geo.hvg)
+```
+
+## Exercise 1.2
+PCA Reduction of IgA and IgG:
+```{r IgA and IgG with PCA}
+#Determine IgA or IgG expressing plasmablasts
+
+#Grab max IgA values across all genes
+IgA <- cbind(geo.hvg$IGHA1, geo.hvg$IGHA2)
+IgA_max <- as.matrix(apply(IgA, 1, max))
+colnames(IgA_max) <- "IgA"
+
+#Grab max IgG values across all genes
+IgG <- cbind(geo.hvg$IGHG1, geo.hvg$IGHG2, 
+             geo.hvg$IGHG3, geo.hvg$IGHG4)
+IgG_max <- as.matrix(apply(IgG, 1, max))
+colnames(IgG_max) <- "IgG"
+
+Ig <- cbind(IgA_max,IgG_max)
+Ig_max <- colnames(Ig)[(apply( Ig, 1, which.max))]
+
+geo.pca <- prcomp(geo.hvg, center = TRUE, 
+    scale = TRUE) 
+plot_pc_data <- data.frame(
+    PC1=geo.pca[["x"]][,'PC1'], 
+    PC2=geo.pca[["x"]][,'PC2'])  
+
+ggplot(plot_pc_data, aes(x=geo.pca[["x"]][,'PC1'],
+    y=geo.pca[["x"]][,'PC2'], color=Ig_max)) + 
+    geom_point(shape=1) + theme_minimal() +   
+    geom_point(aes(color = Ig_max)) +  
+    theme(legend.position = "top")
+                        
+```
+
+rTSNE Reduction:
+```{r rTSNE Reduction}
+# Let's use the top 10 PC for t-SNE
+geo.tsne <- Rtsne(geo.hvg, theta = .001, 
+	perplexity = 30, initial_dims = 10)
+plot_tsne_data <- data.frame(
+    tsne1=geo.tsne$Y[,1], 
+    tsne2=geo.tsne$Y[,2])
+
+#plot PCA results with Ig status
+ggplot(plot_tsne_data, aes(x=geo.tsne$Y[,1],
+    y=geo.tsne$Y[,2], color=Ig_max)) + 
+    geom_point(shape=1) + theme_minimal() +   
+    geom_point(aes(color = Ig_max)) +  
+    theme(legend.position = "top")
+
+```
+
+## Exercise 2.1
+```{r Reading downloaded data}
+#Downloaded the data from "http://tools.iedb.org/mhci/download/"
+iedb <- read.csv("data/bdata.20130222.mhci.txt", header = TRUE, sep = "\t", 
+                 as.is = TRUE)
+
+#What species are in the dataset?
+unique(iedb$species)
+
+filtered_iedb <- subset(iedb, species == 'human'
+                       & mhc == 'HLA-A*02:01'
+                       & meas < 50
+                       & peptide_length == 9)
+
+listOfSequences <- filtered_iedb$sequence
+numSequences <- length(listOfSequences)
+lengthOfSequence <- nchar(listOfSequences[1])
+
+ggseqlogo(listOfSequences, seq_type='aa')
+
+#What amino acids are used?
+aminoAcidsVocab <- unique(strsplit(paste(listOfSequences, collapse = ''), "")[[1]])
+
+PFM <- matrix(0L, length(aminoAcidsVocab), lengthOfSequence)
+
+for (sequence in listOfSequences) {
+  sequenceString <- strsplit(sequence, "")[[1]]
+  for (index in seq_along(sequenceString)) {
+    PFM[match(sequenceString[index],
+              aminoAcidsVocab), index] <-
+      PFM[match(sequenceString[index],
+                aminoAcidsVocab), index] + 1
+  }
+}
+
+rownames(PFM) <- aminoAcidsVocab
+
+ggseqlogo(PFM, seq_type = 'aa')
+
+#Test with another allele type
+filtered_iedb1 <- subset(iedb, species == 'human'
+                       & mhc == 'HLA-A*01:01'
+                       & meas < 50
+                       & peptide_length == 9)
+list_sequences <- filtered_iedb1$sequence
+ggseqlogo(list_sequences, seq_type = 'aa')
+
+```
+
