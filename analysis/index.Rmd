@@ -20,11 +20,15 @@ Welcome to my **first** research website. This page will house links to the vari
 [Data Visualization](ggplottutorial.html)\
 [Statistics](statstutorial.html)\
 
+## Workshops:
+
+[Computational Immunobiology](immunobiology.html)
+
 ## Challenges:
 
-[ <font size="4"> Basic Computing I](computingchallengeI.html)\
-[ <font size="4"> Basic Computing II](computingchallengeII.html)\
+[ Basic Computing I](computingchallengeI.html)\
+[ Basic Computing II](computingchallengeII.html)\
 [ <font size="4">Busayo's Webpage: CLICK HERE FOR REPRODUCIBILITY CHALLENGE</font>](https://busayob.github.io/myproject/)\
-[ <font size="4">Visualization Challenge</font>](visualizationchallenge.html)\
-[ <font size="4">Statistics  Challenge</font>](statisticschallenge.html)\
+[ Visualization Challenge](visualizationchallenge.html)\
+[ Statistics  Challenge](statisticschallenge.html)\
 

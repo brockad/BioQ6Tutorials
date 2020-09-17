@@ -134,6 +134,5 @@ filtered_iedb1 <- subset(iedb, species == 'human'
                        & peptide_length == 9)
 list_sequences <- filtered_iedb1$sequence
 ggseqlogo(list_sequences, seq_type = 'aa')
-
 ```
 
