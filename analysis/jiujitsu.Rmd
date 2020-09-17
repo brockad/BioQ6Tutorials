@@ -1,5 +1,5 @@
 ---
-title: "Data Jiu Jitsi"
+title: "Data Jiu Jitsu"
 author: "Brock"
 date: "9/14/2020"
 output: html_document
@@ -17,7 +17,7 @@ library(stringr)
 The name game:
 ```{r Jiu Jitsu I - name game}
 temp <- tempfile()
-download.file("https://www.ssa.gov/oact/babynames/names.zip", temp)
+download.file("https://www.ssa.gov/oact/babynames/names.zip", temp, mode = "wb")
 
 ```
 
@@ -37,15 +37,15 @@ library(tidyverse) # load tidyverse
 # * append with bind_rows (rbind is inefficient)
 
 # check if the parsed file exists to avoid downloading it again
-if (file.exists("names.csv") == FALSE){
+if (file.exists("data/names.csv") == FALSE){
   yrstart <- 1880 # start year
-  yrend <- 2018 # end year
+  yrend <- 2019 # end year
 
   all_names <- tibble() # store the info
   
   # download using temp file; use unlink() to close
   temp <- tempfile()
-  download.file("https://www.ssa.gov/oact/babynames/names.zip",temp)
+  download.file("https://www.ssa.gov/oact/babynames/names.zip",temp, mode = "wb")
   
   for (yr in yrstart:yrend){
     # extract the file for a given year and read it
@@ -67,9 +67,9 @@ if (file.exists("names.csv") == FALSE){
     all_names <- bind_rows(all_names, dt)
   }
   unlink(temp)
-  write_csv(all_names, path = "names.csv")
+  write_csv(all_names, path = "data/names.csv")
 } else {
-  all_names <- read_csv("names.csv")
+  all_names <- read_csv("data/names.csv")
 }
 
 # 2. Write a function to plot frequencies in time
@@ -146,7 +146,7 @@ read_excel_from_url <- function(url,
                                 skip = 1, 
                                 read_lines = NA){
   temp <- tempfile() # use temporary file
-  download.file(url,temp)  
+  download.file(url,temp, mode = "wb")  
   if(!is.na(read_lines)) {
     # skip is to remove lines at the top; n_max is the number 
     # of lines to read
@@ -166,7 +166,10 @@ read_excel_from_url <- function(url,
 }
 
 # info on table location
-tt <- read_csv("urls_and_skip_NSF_SED.csv")
+temp <- tempfile()
+download.file("https://raw.githubusercontent.com/jnovembre/BSD-QBio6/master/tutorials/advanced_computing/Jujutsu/PhD_trends/urls_and_skip_NSF_SED.csv", mode = "wb", destfile = temp)
+tt <- read_csv(temp)
+unlink(temp)
 
 # option 1: good old R
 tb_sed <- tibble()
@@ -189,8 +192,11 @@ tb_sed2 <- bind_rows(pmap(tt, read_excel_from_url))
 # Neurosciences and neurobiology
 # to select certain fields and normalize the field name, 
 # join with lookup table
+temp <- tempfile()
+download.file("https://raw.githubusercontent.com/jnovembre/BSD-QBio6/master/tutorials/advanced_computing/Jujutsu/PhD_trends/lookup_fields_filter.csv", destfile = temp, mode = "wb")
 tb_sed <- tb_sed %>% 
-  inner_join(read_csv("lookup_fields_filter.csv"))
+  inner_join(read_csv(temp))
+unlink(temp)
 
 ######################################
 # 3
@@ -301,12 +307,15 @@ ggplot(cdt) +
 ## Data Jiu Jitsu III
 Papers from UofC:
 ```{r Jiu Jitsu III - Papers from UofC}
-pub_data <- as_tibble(read_csv("D:/UChicago/BSD-QBio_2020/BSD-QBio6/tutorials/advanced_computing/Jujutsu/Papers_UofC/All_UofC_Bio_2011-20.csv")) %>%
+rm(list = ls()) # clean workspace
+temp <- tempfile()
+download.file("https://raw.githubusercontent.com/jnovembre/BSD-QBio6/master/tutorials/advanced_computing/Jujutsu/Papers_UofC/All_UofC_Bio_2011-20.csv", temp, mode = "wb")
+pub_data <- read_csv(temp) %>%
   rename(au = Authors, au_ids = `Author(s) ID`, year = Year, 
          journal = `Source title`, cits = `Cited by`, 
          article = `Document Type`, oa = `Access Type`) %>%
   filter(cits != 0)
-
+unlink(temp)
 #Demonstration that distribution is log-normal
 pub_data %>%
   ggplot() + aes(x = log10(cits), fill = year) + geom_histogram() + facet_wrap(~year, scales = "free")
@@ -340,8 +349,10 @@ library(tidyverse)
 ######################################
 # 1
 ######################################
-
-dd <- read_csv("All_UofC_Bio_2011-20.csv")
+temp <- tempfile()
+download.file("https://raw.githubusercontent.com/jnovembre/BSD-QBio6/master/tutorials/advanced_computing/Jujutsu/Papers_UofC/All_UofC_Bio_2011-20.csv", temp, mode = "wb")
+dd <- read_csv(temp)
+unlink(temp)
 
 # rename cols for easy access
 dd <- dd %>% rename(
