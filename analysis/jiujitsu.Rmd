@@ -1,0 +1,446 @@
+---
+title: "Data Jiu Jitsi"
+author: "Brock"
+date: "9/14/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+library(stringr)
+```
+
+## Data Jiu Jitsu I
+
+The name game:
+```{r Jiu Jitsu I - name game}
+temp <- tempfile()
+download.file("https://www.ssa.gov/oact/babynames/names.zip", temp)
+
+```
+
+Solution I:
+```{r Solution I}
+rm(list = ls()) # clear workspace
+library(tidyverse) # load tidyverse
+
+# 1. Download and organize the data
+# Strategy: 
+# * use a temporary file for the zip.
+# * use a for loop to go through the files, and unz to extract from zip file
+#   again use a connection rather than creating physical file
+# * compute proportions within year to speed up calculation
+#   i.e., working with a single year and repeating multiple times
+#   is much faster that doing it only once on the whole data
+# * append with bind_rows (rbind is inefficient)
+
+# check if the parsed file exists to avoid downloading it again
+if (file.exists("names.csv") == FALSE){
+  yrstart <- 1880 # start year
+  yrend <- 2018 # end year
+
+  all_names <- tibble() # store the info
+  
+  # download using temp file; use unlink() to close
+  temp <- tempfile()
+  download.file("https://www.ssa.gov/oact/babynames/names.zip",temp)
+  
+  for (yr in yrstart:yrend){
+    # extract the file for a given year and read it
+    print(yr)
+    con <- unz(temp, paste0("yob", yr, ".txt"))
+    dt <- read.table(con, 
+                     header = FALSE, sep = ",", 
+                     stringsAsFactors = FALSE) # avoid treating names as factors
+                                               # because it takes a lot longer to bind them
+    colnames(dt) <- c("name", "sex", "num")
+    # now compute proportions
+    dt <- dt %>% # a) count totals by sex
+      group_by(sex) %>% 
+      mutate(total = sum(num)) %>% 
+      ungroup() %>% # b) compute proportion
+      mutate(prop = num / total) %>% # c) add a column for the year
+      add_column(year = yr) %>% 
+      select(year, name, sex, prop) # select only useful columns
+    all_names <- bind_rows(all_names, dt)
+  }
+  unlink(temp)
+  write_csv(all_names, path = "names.csv")
+} else {
+  all_names <- read_csv("names.csv")
+}
+
+# 2. Write a function to plot frequencies in time
+
+plot_name_in_time <- function(data = all_names, 
+                              my_name = "Hermione", 
+                              highlight = 2001){
+  pl <- data %>% filter(name == my_name) %>% 
+    ggplot() + 
+    aes(x = year, y = prop, fill = sex) + 
+    geom_col() + 
+    geom_vline(xintercept = highlight, linetype = 2) + 
+    facet_wrap(~sex, scales = "free_y") # separate panels by sex
+  return(pl)
+}
+
+# 4. Names switching sex 
+
+# Strategy:
+# To keep this simple, compute the correlation between
+# proportion M and proportion F for a name
+# across all years
+# Names that have switched should show negative correlation
+# To avoid clutter due to very rare names, filter by frequency
+
+# a) store proportion for M and F
+dd <- all_names %>% spread(sex, prop, fill = 0)
+threshold <- 0.0001
+# b) only consider names for which the max frequency is > threshold for both sexes
+gender_neutral_names <- dd %>% 
+  group_by(name) %>% 
+  summarise(`M` = max(`M`), `F` = max(`F`)) %>% 
+  ungroup() %>% 
+  filter(`M` > threshold, `F` > threshold) %>% 
+  select(name) %>% distinct()
+correlations <- dd %>% 
+  inner_join(gender_neutral_names) %>% 
+  group_by(name) %>% 
+  summarise(cor = cor(`F`, `M`)) %>% arrange(cor)
+
+# nicer plot for this type of data
+plot_gender_prop <- function(data = all_names, 
+                              my_name = "Hermione"){
+  pl <- data %>% filter(name == my_name) %>% 
+    ggplot() + 
+    aes(x = year, y = prop, fill = sex) + 
+    geom_col(position = "fill") 
+  return(pl)
+}
+
+# this looks pretty
+plot_gender_prop(all_names, "Lindsey")
+```
+
+## Data Jiu Jitsu II
+
+Phd trends:
+```{r Jiu Jitsu II - Phd trends}
+```
+
+Solution II:
+```{r Solution II}
+rm(list = ls()) # clean workspace
+library(tidyverse) # load tidyverse
+library(readxl) # library to read excel
+
+######################################
+# 1
+######################################
+
+# function for downloading/massaging data for a single year
+read_excel_from_url <- function(url, 
+                                year, 
+                                skip = 1, 
+                                read_lines = NA){
+  temp <- tempfile() # use temporary file
+  download.file(url,temp)  
+  if(!is.na(read_lines)) {
+    # skip is to remove lines at the top; n_max is the number 
+    # of lines to read
+    dd <- read_xlsx(temp, skip = skip, n_max = read_lines)
+  } else {
+    dd <- read_xlsx(temp, skip = skip)
+  }
+  unlink(temp)
+  # change col names for easier typing
+  colnames(dd) <- c("field", "total", 
+                    "male", "female", "perc_female") 
+  dd <- dd %>% 
+    select(field, total) %>% # take only field, total
+    filter(!is.na(field)) %>% # remove empty lines
+    add_column(year = year) # keep track of year
+  return(dd)
+}
+
+# info on table location
+tt <- read_csv("urls_and_skip_NSF_SED.csv")
+
+# option 1: good old R
+tb_sed <- tibble()
+for (i in 1:nrow(tt)){
+  tb_sed <- bind_rows(tb_sed, read_excel_from_url(tt$url[i],
+                                            tt$year[i],
+                                            tt$skip[i],
+                                            tt$read[i]))
+}
+
+# option 2, using functional programming
+tb_sed2 <- bind_rows(pmap(tt, read_excel_from_url))
+
+######################################
+# 2
+######################################
+
+# be careful: some names have changed: For example
+# Neurosciences, neurobiology
+# Neurosciences and neurobiology
+# to select certain fields and normalize the field name, 
+# join with lookup table
+tb_sed <- tb_sed %>% 
+  inner_join(read_csv("lookup_fields_filter.csv"))
+
+######################################
+# 3
+######################################
+
+# to plot, use something like this
+plot_PhD_in_time <- function(my_tibble){
+  pl <- my_tibble %>% 
+    ggplot() +
+    aes(x = year, y = total, colour = name_to_use) + 
+    geom_point() + 
+    geom_line() + 
+    facet_wrap(~name_to_use, scales = "free") + 
+    theme(legend.position = "none")
+  return(pl)
+}
+
+plot_PhD_in_time(tb_sed)
+
+######################################
+# 4
+######################################
+
+# max change
+
+# compute max and min per field
+tb_sed %>% 
+  group_by(name_to_use) %>% 
+  summarize(max_n = max(total), 
+            min_n = min(total),
+            ratio = max_n / min_n) %>% # note you can use max_n/min_n already!
+  ungroup() %>% 
+  arrange(ratio)
+
+######################################
+# 5
+######################################
+
+# compute the correlation between any
+# two fields using cor
+
+cdt <- tb_sed %>%
+  select(name_to_use, total, year) %>%
+  spread(name_to_use, total) %>% # now each field is a column
+  select(-year) %>%
+  cor()
+
+# cor is now a matrix!!
+
+# transform back to tibble for plotting
+cdt <- cdt %>%
+  as_tibble() %>%
+  add_column(field1 = rownames(cdt)) %>%
+  gather(field, correlation, -field1)
+
+# plot using geom_tile
+
+ggplot(cdt) +
+  aes(x = field, y = field1, fill = correlation) +
+  geom_tile() +
+  scale_fill_gradient2() + # what follows is to rotate labs
+  theme(axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5,
+                                   hjust = 1)) + # and clean a bit
+  xlab("") + ylab("") + theme(legend.position = "bottom")
+
+######################################
+# 6
+######################################
+
+# as 5, but save the matrix to compute eigenvectors
+cdt <- tb_sed %>%
+  select(name_to_use, total, year) %>%
+  spread(name_to_use, total) %>%
+  select(-year) %>%
+  cor()
+
+# use the leading eigenvector to order
+
+M <- as.matrix(cdt)
+my_order <- colnames(M)[order(eigen(M)$vectors[,1])]
+
+# build the tibble
+
+cdt <- cdt %>%
+  as_tibble() %>%
+  add_column(field1 = rownames(cdt)) %>%
+  gather(field, correlation, -field1)
+
+# use factors to force the order in the plot
+
+cdt <- cdt %>% mutate(field = factor(field, levels = my_order),
+                      field1 = factor(field1, levels = my_order))
+
+# plot using geom_tile
+
+ggplot(cdt) +
+  aes(x = field, y = field1, fill = correlation) +
+  geom_tile() +
+  scale_fill_gradient2() + # what follows is to rotate labs
+  theme(axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5,
+                                   hjust = 1)) + # and clean a bit
+  xlab("") + ylab("") + theme(legend.position = "bottom")
+```
+
+
+## Data Jiu Jitsu III
+Papers from UofC:
+```{r Jiu Jitsu III - Papers from UofC}
+pub_data <- as_tibble(read_csv("D:/UChicago/BSD-QBio_2020/BSD-QBio6/tutorials/advanced_computing/Jujutsu/Papers_UofC/All_UofC_Bio_2011-20.csv")) %>%
+  rename(au = Authors, au_ids = `Author(s) ID`, year = Year, 
+         journal = `Source title`, cits = `Cited by`, 
+         article = `Document Type`, oa = `Access Type`) %>%
+  filter(cits != 0)
+
+#Demonstration that distribution is log-normal
+pub_data %>%
+  ggplot() + aes(x = log10(cits), fill = year) + geom_histogram() + facet_wrap(~year, scales = "free")
+
+pub_data <- pub_data %>%
+  mutate(log_cits = log10(cits))
+
+lmq2 <- lm(log_cits ~ I(2010 - year), data = pub_data)
+
+
+pub_data <- pub_data %>%
+  group_by(au) %>%
+  mutate(nau = str_count(au_ids, ";") + 1) %>%
+  mutate(multi = nau > 12) %>%
+  ungroup()
+
+lmq3 <- lm(log_cits ~ year:multi, data = pub_data)
+
+
+lmq4 <- lm(log_cits ~I(2010 - year) + multi + article + journal, data = pub_data)
+
+
+head(lmq4$coefficients)
+```
+
+Solution III:
+```{r Solution III}
+rm(list = ls())
+library(tidyverse)
+
+######################################
+# 1
+######################################
+
+dd <- read_csv("All_UofC_Bio_2011-20.csv")
+
+# rename cols for easy access
+dd <- dd %>% rename(
+  au = Authors,
+  au_ids = `Author(s) ID`,
+  year = Year,
+  journal = `Source title`,
+  cits = `Cited by`,
+  article = `Document Type`,
+  oa = `Access Type`
+)
+
+# remove uncited docs (probably editorials, errata, etc)
+dd <- dd %>% filter(cits > 0)
+
+######################################
+# 2
+######################################
+
+# show that the distribution of log citations per year is about normal
+# esp for older years
+
+dd %>% ggplot() + 
+  aes(x = log(cits),
+      fill = year) + 
+  geom_histogram() + 
+  facet_wrap(~year, scales = "free")
+
+# simple model: only year matters
+# for ease of interpretation, remove year from 2010; the coefficient tells us the growth per year
+model1 <- lm(log(cits) ~ I(2010 - year), data = dd)
+summary(model1)
+
+######################################
+# 3
+######################################
+
+# try adding number of authors
+dd <- dd %>% mutate(nau = str_count(au_ids, ";") + 1)
+dd <- dd %>% mutate(multi = nau > 12)
+model3 <- lm(log(cits) ~ I(2010 - year) + multi, data = dd)
+summary(model3)
+
+# add info on article/review
+model4 <- lm(log(cits) ~ I(2010 - year) + multi + article, data = dd)
+summary(model4)
+
+######################################
+# 4
+######################################
+
+# add info on journal
+# first transform journal names into factors
+dd <- dd %>% mutate(journal = factor(journal)) 
+# use PLoS ONE as the baseline
+dd <- dd %>% mutate(journal = relevel(journal, ref = "PLoS ONE"))
+model5 <- lm(log(cits) ~ I(2010 - year) + multi + article + journal, data = dd)
+head(model5$coefficients)
+
+mat_coeff <- as.matrix(summary(model5)$coefficients)[-(1:4),] # do not plot multi, article, year, intercept
+jrn_effects <- as_tibble(mat_coeff) %>%  # make coefficients into tibble
+  add_column(journal = rownames(mat_coeff)) %>%  # use the row name as journal name (note that each starts with journal[NAME])
+  filter(`Pr(>|t|)` < 10^-6) %>% # only small p-values
+  mutate(journal = str_replace_all(journal, "^journal", "")) %>% # remove "journal" at beginning of line
+  mutate(journal = ifelse(journal == "Proceedings of the National Academy of Sciences of the United States of America", "PNAS", journal))
+# last line---change to PNAS for better graph
+
+jrn_plot <- ggplot(jrn_effects) + 
+  aes(x = Estimate, 
+      y = reorder(journal, Estimate), # a good way to reorder labels
+      fill = sign(Estimate)) + 
+  geom_col() + 
+  scale_fill_gradient2() + 
+  theme(legend.position = "none") +
+  ylab("")
+
+show(jrn_plot)
+
+######################################
+# 5
+######################################
+
+# find journals that have published both open access and paywalled articles in a given year
+jr_year_oa_test <- dd %>% 
+  mutate(oa = ifelse(is.na(oa), "pay", "open")) %>% 
+  group_by(journal, year, oa) %>% 
+  tally() %>% 
+  spread(oa, n, fill = 0) %>% 
+  ungroup() %>% 
+  filter(pay > 0, open > 0) %>% 
+  arrange(desc(open), desc(pay))
+
+# now build data set for testing
+testset <- dd %>% 
+  inner_join(jr_year_oa_test)
+
+# finally, test whether OA has positive effect
+model_oa <- lm(log(cits) ~ year:journal:multi:article + open, data = testset)
+# there are too many coeffs to plot---extract the second one
+head(summary(model_oa)$coefficients, 2)
+```
+
