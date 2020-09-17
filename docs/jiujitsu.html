@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Brock" />
+
+
+<title>Data Jiu Jitsu</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">BioQ6Tutorials</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/brockad/BioQ6Tutorials">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Data Jiu Jitsu</h1>
+<h4 class="author">Brock</h4>
+<h4 class="date">9/14/2020</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-09-17
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>BioQ6Tutorials/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20200915code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20200915)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20200915code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20200915)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrockadBioQ6Tutorialstreecfff8202101b93e1c102369715b79faf5a4b03f5targetblankcfff820a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brockad/BioQ6Tutorials/tree/cfff8202101b93e1c102369715b79faf5a4b03f5" target="_blank">cfff820</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrockadBioQ6Tutorialstreecfff8202101b93e1c102369715b79faf5a4b03f5targetblankcfff820a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/brockad/BioQ6Tutorials/tree/cfff8202101b93e1c102369715b79faf5a4b03f5" target="_blank">cfff820</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/GSE116500_Limma_adj_4.csv.gz
+    Ignored:    data/bdata.20130222.mhci.txt
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/jiujitsu.Rmd</code>) and HTML (<code>docs/jiujitsu.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brockad/BioQ6Tutorials/blob/cfff8202101b93e1c102369715b79faf5a4b03f5/analysis/jiujitsu.Rmd" target="_blank">cfff820</a>
+</td>
+<td>
+brockad
+</td>
+<td>
+2020-09-17
+</td>
+<td>
+Fixed typo, edited download.file to be more compatible with Windows.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brockad/BioQ6Tutorials/blob/8f59881f371d677e4850a4dfb2d0ba07bc39ad82/analysis/jiujitsu.Rmd" target="_blank">8f59881</a>
+</td>
+<td>
+brockad
+</td>
+<td>
+2020-09-17
+</td>
+<td>
+Added Data Jiu Jitsu challenges with solutions.
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="data-jiu-jitsu-i" class="section level2">
+<h2>Data Jiu Jitsu I</h2>
+<p>The name game:</p>
+<pre class="r"><code>temp &lt;- tempfile()
+download.file(&quot;https://www.ssa.gov/oact/babynames/names.zip&quot;, temp, mode = &quot;wb&quot;)</code></pre>
+<p>Solution I:</p>
+<pre class="r"><code>rm(list = ls()) # clear workspace
+library(tidyverse) # load tidyverse
+
+# 1. Download and organize the data
+# Strategy: 
+# * use a temporary file for the zip.
+# * use a for loop to go through the files, and unz to extract from zip file
+#   again use a connection rather than creating physical file
+# * compute proportions within year to speed up calculation
+#   i.e., working with a single year and repeating multiple times
+#   is much faster that doing it only once on the whole data
+# * append with bind_rows (rbind is inefficient)
+
+# check if the parsed file exists to avoid downloading it again
+if (file.exists(&quot;data/names.csv&quot;) == FALSE){
+  yrstart &lt;- 1880 # start year
+  yrend &lt;- 2019 # end year
+
+  all_names &lt;- tibble() # store the info
+  
+  # download using temp file; use unlink() to close
+  temp &lt;- tempfile()
+  download.file(&quot;https://www.ssa.gov/oact/babynames/names.zip&quot;,temp, mode = &quot;wb&quot;)
+  
+  for (yr in yrstart:yrend){
+    # extract the file for a given year and read it
+    print(yr)
+    con &lt;- unz(temp, paste0(&quot;yob&quot;, yr, &quot;.txt&quot;))
+    dt &lt;- read.table(con, 
+                     header = FALSE, sep = &quot;,&quot;, 
+                     stringsAsFactors = FALSE) # avoid treating names as factors
+                                               # because it takes a lot longer to bind them
+    colnames(dt) &lt;- c(&quot;name&quot;, &quot;sex&quot;, &quot;num&quot;)
+    # now compute proportions
+    dt &lt;- dt %&gt;% # a) count totals by sex
+      group_by(sex) %&gt;% 
+      mutate(total = sum(num)) %&gt;% 
+      ungroup() %&gt;% # b) compute proportion
+      mutate(prop = num / total) %&gt;% # c) add a column for the year
+      add_column(year = yr) %&gt;% 
+      select(year, name, sex, prop) # select only useful columns
+    all_names &lt;- bind_rows(all_names, dt)
+  }
+  unlink(temp)
+  write_csv(all_names, path = &quot;data/names.csv&quot;)
+} else {
+  all_names &lt;- read_csv(&quot;data/names.csv&quot;)
+}</code></pre>
+<pre><code>Parsed with column specification:
+cols(
+  year = col_double(),
+  name = col_character(),
+  sex = col_character(),
+  prop = col_double()
+)</code></pre>
+<pre class="r"><code># 2. Write a function to plot frequencies in time
+
+plot_name_in_time &lt;- function(data = all_names, 
+                              my_name = &quot;Hermione&quot;, 
+                              highlight = 2001){
+  pl &lt;- data %&gt;% filter(name == my_name) %&gt;% 
+    ggplot() + 
+    aes(x = year, y = prop, fill = sex) + 
+    geom_col() + 
+    geom_vline(xintercept = highlight, linetype = 2) + 
+    facet_wrap(~sex, scales = &quot;free_y&quot;) # separate panels by sex
+  return(pl)
+}
+
+# 4. Names switching sex 
+
+# Strategy:
+# To keep this simple, compute the correlation between
+# proportion M and proportion F for a name
+# across all years
+# Names that have switched should show negative correlation
+# To avoid clutter due to very rare names, filter by frequency
+
+# a) store proportion for M and F
+dd &lt;- all_names %&gt;% spread(sex, prop, fill = 0)
+threshold &lt;- 0.0001
+# b) only consider names for which the max frequency is &gt; threshold for both sexes
+gender_neutral_names &lt;- dd %&gt;% 
+  group_by(name) %&gt;% 
+  summarise(`M` = max(`M`), `F` = max(`F`)) %&gt;% 
+  ungroup() %&gt;% 
+  filter(`M` &gt; threshold, `F` &gt; threshold) %&gt;% 
+  select(name) %&gt;% distinct()</code></pre>
+<pre><code>`summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>correlations &lt;- dd %&gt;% 
+  inner_join(gender_neutral_names) %&gt;% 
+  group_by(name) %&gt;% 
+  summarise(cor = cor(`F`, `M`)) %&gt;% arrange(cor)</code></pre>
+<pre><code>Joining, by = &quot;name&quot;</code></pre>
+<pre><code>`summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code># nicer plot for this type of data
+plot_gender_prop &lt;- function(data = all_names, 
+                              my_name = &quot;Hermione&quot;){
+  pl &lt;- data %&gt;% filter(name == my_name) %&gt;% 
+    ggplot() + 
+    aes(x = year, y = prop, fill = sex) + 
+    geom_col(position = &quot;fill&quot;) 
+  return(pl)
+}
+
+# this looks pretty
+plot_gender_prop(all_names, &quot;Lindsey&quot;)</code></pre>
+<p><img src="figure/jiujitsu.Rmd/Solution%20I-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="data-jiu-jitsu-ii" class="section level2">
+<h2>Data Jiu Jitsu II</h2>
+<p>Phd trends:</p>
+<p>Solution II:</p>
+<pre class="r"><code>rm(list = ls()) # clean workspace
+library(tidyverse) # load tidyverse
+library(readxl) # library to read excel
+
+######################################
+# 1
+######################################
+
+# function for downloading/massaging data for a single year
+read_excel_from_url &lt;- function(url, 
+                                year, 
+                                skip = 1, 
+                                read_lines = NA){
+  temp &lt;- tempfile() # use temporary file
+  download.file(url,temp, mode = &quot;wb&quot;)  
+  if(!is.na(read_lines)) {
+    # skip is to remove lines at the top; n_max is the number 
+    # of lines to read
+    dd &lt;- read_xlsx(temp, skip = skip, n_max = read_lines)
+  } else {
+    dd &lt;- read_xlsx(temp, skip = skip)
+  }
+  unlink(temp)
+  # change col names for easier typing
+  colnames(dd) &lt;- c(&quot;field&quot;, &quot;total&quot;, 
+                    &quot;male&quot;, &quot;female&quot;, &quot;perc_female&quot;) 
+  dd &lt;- dd %&gt;% 
+    select(field, total) %&gt;% # take only field, total
+    filter(!is.na(field)) %&gt;% # remove empty lines
+    add_column(year = year) # keep track of year
+  return(dd)
+}
+
+# info on table location
+temp &lt;- tempfile()
+download.file(&quot;https://raw.githubusercontent.com/jnovembre/BSD-QBio6/master/tutorials/advanced_computing/Jujutsu/PhD_trends/urls_and_skip_NSF_SED.csv&quot;, mode = &quot;wb&quot;, destfile = temp)
+tt &lt;- read_csv(temp)</code></pre>
+<pre><code>Parsed with column specification:
+cols(
+  year = col_double(),
+  url = col_character(),
+  skip = col_double(),
+  read = col_double()
+)</code></pre>
+<pre class="r"><code>unlink(temp)
+
+# option 1: good old R
+tb_sed &lt;- tibble()
+for (i in 1:nrow(tt)){
+  tb_sed &lt;- bind_rows(tb_sed, read_excel_from_url(tt$url[i],
+                                            tt$year[i],
+                                            tt$skip[i],
+                                            tt$read[i]))
+}
+
+# option 2, using functional programming
+tb_sed2 &lt;- bind_rows(pmap(tt, read_excel_from_url))
+
+######################################
+# 2
+######################################
+
+# be careful: some names have changed: For example
+# Neurosciences, neurobiology
+# Neurosciences and neurobiology
+# to select certain fields and normalize the field name, 
+# join with lookup table
+temp &lt;- tempfile()
+download.file(&quot;https://raw.githubusercontent.com/jnovembre/BSD-QBio6/master/tutorials/advanced_computing/Jujutsu/PhD_trends/lookup_fields_filter.csv&quot;, destfile = temp, mode = &quot;wb&quot;)
+tb_sed &lt;- tb_sed %&gt;% 
+  inner_join(read_csv(temp))</code></pre>
+<pre><code>Parsed with column specification:
+cols(
+  field = col_character(),
+  name_to_use = col_character()
+)</code></pre>
+<pre><code>Joining, by = &quot;field&quot;</code></pre>
+<pre class="r"><code>unlink(temp)
+
+######################################
+# 3
+######################################
+
+# to plot, use something like this
+plot_PhD_in_time &lt;- function(my_tibble){
+  pl &lt;- my_tibble %&gt;% 
+    ggplot() +
+    aes(x = year, y = total, colour = name_to_use) + 
+    geom_point() + 
+    geom_line() + 
+    facet_wrap(~name_to_use, scales = &quot;free&quot;) + 
+    theme(legend.position = &quot;none&quot;)
+  return(pl)
+}
+
+plot_PhD_in_time(tb_sed)</code></pre>
+<p><img src="figure/jiujitsu.Rmd/Solution%20II-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>######################################
+# 4
+######################################
+
+# max change
+
+# compute max and min per field
+tb_sed %&gt;% 
+  group_by(name_to_use) %&gt;% 
+  summarize(max_n = max(total), 
+            min_n = min(total),
+            ratio = max_n / min_n) %&gt;% # note you can use max_n/min_n already!
+  ungroup() %&gt;% 
+  arrange(ratio)</code></pre>
+<pre><code>`summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre><code># A tibble: 20 x 4
+   name_to_use           max_n min_n ratio
+   &lt;chr&gt;                 &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1 All fields            55195 52760  1.05
+ 2 Biomedical sciences    8991  8471  1.06
+ 3 Neurosciences          1091   985  1.11
+ 4 Biochemistry            834   749  1.11
+ 5 Ecology                 482   418  1.15
+ 6 Microbiology            480   410  1.17
+ 7 Molecular biology       673   574  1.17
+ 8 Immunology              473   401  1.18
+ 9 Evolutionary biology    242   200  1.21
+10 Bioinformatics          203   160  1.27
+11 Cancer biology          457   355  1.29
+12 Biophysics              208   152  1.37
+13 Epidemiology            401   292  1.37
+14 Computational biology   147   107  1.37
+15 Medical physics         103    74  1.39
+16 Structural biology       67    47  1.43
+17 Cell biology            331   218  1.52
+18 Developmental biology   213   139  1.53
+19 Zoology                  46    29  1.59
+20 Biostatistics           233   145  1.61</code></pre>
+<pre class="r"><code>######################################
+# 5
+######################################
+
+# compute the correlation between any
+# two fields using cor
+
+cdt &lt;- tb_sed %&gt;%
+  select(name_to_use, total, year) %&gt;%
+  spread(name_to_use, total) %&gt;% # now each field is a column
+  select(-year) %&gt;%
+  cor()
+
+# cor is now a matrix!!
+
+# transform back to tibble for plotting
+cdt &lt;- cdt %&gt;%
+  as_tibble() %&gt;%
+  add_column(field1 = rownames(cdt)) %&gt;%
+  gather(field, correlation, -field1)
+
+# plot using geom_tile
+
+ggplot(cdt) +
+  aes(x = field, y = field1, fill = correlation) +
+  geom_tile() +
+  scale_fill_gradient2() + # what follows is to rotate labs
+  theme(axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5,
+                                   hjust = 1)) + # and clean a bit
+  xlab(&quot;&quot;) + ylab(&quot;&quot;) + theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="figure/jiujitsu.Rmd/Solution%20II-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>######################################
+# 6
+######################################
+
+# as 5, but save the matrix to compute eigenvectors
+cdt &lt;- tb_sed %&gt;%
+  select(name_to_use, total, year) %&gt;%
+  spread(name_to_use, total) %&gt;%
+  select(-year) %&gt;%
+  cor()
+
+# use the leading eigenvector to order
+
+M &lt;- as.matrix(cdt)
+my_order &lt;- colnames(M)[order(eigen(M)$vectors[,1])]
+
+# build the tibble
+
+cdt &lt;- cdt %&gt;%
+  as_tibble() %&gt;%
+  add_column(field1 = rownames(cdt)) %&gt;%
+  gather(field, correlation, -field1)
+
+# use factors to force the order in the plot
+
+cdt &lt;- cdt %&gt;% mutate(field = factor(field, levels = my_order),
+                      field1 = factor(field1, levels = my_order))
+
+# plot using geom_tile
+
+ggplot(cdt) +
+  aes(x = field, y = field1, fill = correlation) +
+  geom_tile() +
+  scale_fill_gradient2() + # what follows is to rotate labs
+  theme(axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5,
+                                   hjust = 1)) + # and clean a bit
+  xlab(&quot;&quot;) + ylab(&quot;&quot;) + theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="figure/jiujitsu.Rmd/Solution%20II-3.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="data-jiu-jitsu-iii" class="section level2">
+<h2>Data Jiu Jitsu III</h2>
+<p>Papers from UofC:</p>
+<pre class="r"><code>rm(list = ls()) # clean workspace
+temp &lt;- tempfile()
+download.file(&quot;https://raw.githubusercontent.com/jnovembre/BSD-QBio6/master/tutorials/advanced_computing/Jujutsu/Papers_UofC/All_UofC_Bio_2011-20.csv&quot;, temp, mode = &quot;wb&quot;)
+pub_data &lt;- read_csv(temp) %&gt;%
+  rename(au = Authors, au_ids = `Author(s) ID`, year = Year, 
+         journal = `Source title`, cits = `Cited by`, 
+         article = `Document Type`, oa = `Access Type`) %&gt;%
+  filter(cits != 0)</code></pre>
+<pre><code>Parsed with column specification:
+cols(
+  Authors = col_character(),
+  `Author(s) ID` = col_character(),
+  Year = col_double(),
+  `Source title` = col_character(),
+  `Cited by` = col_double(),
+  `Document Type` = col_character(),
+  `Access Type` = col_character()
+)</code></pre>
+<pre class="r"><code>unlink(temp)
+#Demonstration that distribution is log-normal
+pub_data %&gt;%
+  ggplot() + aes(x = log10(cits), fill = year) + geom_histogram() + facet_wrap(~year, scales = &quot;free&quot;)</code></pre>
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="figure/jiujitsu.Rmd/Jiu%20Jitsu%20III%20-%20Papers%20from%20UofC-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pub_data &lt;- pub_data %&gt;%
+  mutate(log_cits = log10(cits))
+
+lmq2 &lt;- lm(log_cits ~ I(2010 - year), data = pub_data)
+
+
+pub_data &lt;- pub_data %&gt;%
+  group_by(au) %&gt;%
+  mutate(nau = str_count(au_ids, &quot;;&quot;) + 1) %&gt;%
+  mutate(multi = nau &gt; 12) %&gt;%
+  ungroup()
+
+lmq3 &lt;- lm(log_cits ~ year:multi, data = pub_data)
+
+
+lmq4 &lt;- lm(log_cits ~I(2010 - year) + multi + article + journal, data = pub_data)
+
+
+head(lmq4$coefficients)</code></pre>
+<pre><code>                     (Intercept)                   I(2010 - year) 
+                       0.9441027                        0.1286145 
+                       multiTRUE                    articleReview 
+                       0.1883682                        0.1765150 
+     journalACS Chemical Biology journalACS Chemical Neuroscience 
+                       0.8055816                        0.9870925 </code></pre>
+<p>Solution III:</p>
+<pre class="r"><code>rm(list = ls())
+library(tidyverse)
+
+######################################
+# 1
+######################################
+temp &lt;- tempfile()
+download.file(&quot;https://raw.githubusercontent.com/jnovembre/BSD-QBio6/master/tutorials/advanced_computing/Jujutsu/Papers_UofC/All_UofC_Bio_2011-20.csv&quot;, temp, mode = &quot;wb&quot;)
+dd &lt;- read_csv(temp)</code></pre>
+<pre><code>Parsed with column specification:
+cols(
+  Authors = col_character(),
+  `Author(s) ID` = col_character(),
+  Year = col_double(),
+  `Source title` = col_character(),
+  `Cited by` = col_double(),
+  `Document Type` = col_character(),
+  `Access Type` = col_character()
+)</code></pre>
+<pre class="r"><code>unlink(temp)
+
+# rename cols for easy access
+dd &lt;- dd %&gt;% rename(
+  au = Authors,
+  au_ids = `Author(s) ID`,
+  year = Year,
+  journal = `Source title`,
+  cits = `Cited by`,
+  article = `Document Type`,
+  oa = `Access Type`
+)
+
+# remove uncited docs (probably editorials, errata, etc)
+dd &lt;- dd %&gt;% filter(cits &gt; 0)
+
+######################################
+# 2
+######################################
+
+# show that the distribution of log citations per year is about normal
+# esp for older years
+
+dd %&gt;% ggplot() + 
+  aes(x = log(cits),
+      fill = year) + 
+  geom_histogram() + 
+  facet_wrap(~year, scales = &quot;free&quot;)</code></pre>
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="figure/jiujitsu.Rmd/Solution%20III-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># simple model: only year matters
+# for ease of interpretation, remove year from 2010; the coefficient tells us the growth per year
+model1 &lt;- lm(log(cits) ~ I(2010 - year), data = dd)
+summary(model1)</code></pre>
+<pre><code>
+Call:
+lm(formula = log(cits) ~ I(2010 - year), data = dd)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.7972 -0.7715  0.0069  0.7429  5.6142 
+
+Coefficients:
+               Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    4.050447   0.023704  170.87   &lt;2e-16 ***
+I(2010 - year) 0.253201   0.004162   60.84   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 1.201 on 12206 degrees of freedom
+Multiple R-squared:  0.2327,    Adjusted R-squared:  0.2326 
+F-statistic:  3701 on 1 and 12206 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>######################################
+# 3
+######################################
+
+# try adding number of authors
+dd &lt;- dd %&gt;% mutate(nau = str_count(au_ids, &quot;;&quot;) + 1)
+dd &lt;- dd %&gt;% mutate(multi = nau &gt; 12)
+model3 &lt;- lm(log(cits) ~ I(2010 - year) + multi, data = dd)
+summary(model3)</code></pre>
+<pre><code>
+Call:
+lm(formula = log(cits) ~ I(2010 - year) + multi, data = dd)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.4999 -0.7495  0.0087  0.7369  5.6003 
+
+Coefficients:
+               Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    3.959844   0.023068  171.66   &lt;2e-16 ***
+I(2010 - year) 0.265888   0.004038   65.85   &lt;2e-16 ***
+multiTRUE      0.805980   0.026770   30.11   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 1.159 on 12205 degrees of freedom
+Multiple R-squared:  0.2857,    Adjusted R-squared:  0.2856 
+F-statistic:  2441 on 2 and 12205 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code># add info on article/review
+model4 &lt;- lm(log(cits) ~ I(2010 - year) + multi + article, data = dd)
+summary(model4)</code></pre>
+<pre><code>
+Call:
+lm(formula = log(cits) ~ I(2010 - year) + multi + article, data = dd)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.4878 -0.7504  0.0124  0.7418  5.2926 
+
+Coefficients:
+               Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    3.922163   0.023284 168.449   &lt;2e-16 ***
+I(2010 - year) 0.266350   0.004022  66.228   &lt;2e-16 ***
+multiTRUE      0.832006   0.026790  31.057   &lt;2e-16 ***
+articleReview  0.348160   0.034895   9.977   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 1.154 on 12204 degrees of freedom
+Multiple R-squared:  0.2915,    Adjusted R-squared:  0.2913 
+F-statistic:  1674 on 3 and 12204 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>######################################
+# 4
+######################################
+
+# add info on journal
+# first transform journal names into factors
+dd &lt;- dd %&gt;% mutate(journal = factor(journal)) 
+# use PLoS ONE as the baseline
+dd &lt;- dd %&gt;% mutate(journal = relevel(journal, ref = &quot;PLoS ONE&quot;))
+model5 &lt;- lm(log(cits) ~ I(2010 - year) + multi + article + journal, data = dd)
+head(model5$coefficients)</code></pre>
+<pre><code>                (Intercept)              I(2010 - year) 
+                  3.7225336                   0.2961459 
+                  multiTRUE               articleReview 
+                  0.4337338                   0.4064407 
+           journal3 Biotech journalACS Chemical Biology 
+                 -1.5486567                   0.3062636 </code></pre>
+<pre class="r"><code>mat_coeff &lt;- as.matrix(summary(model5)$coefficients)[-(1:4),] # do not plot multi, article, year, intercept
+jrn_effects &lt;- as_tibble(mat_coeff) %&gt;%  # make coefficients into tibble
+  add_column(journal = rownames(mat_coeff)) %&gt;%  # use the row name as journal name (note that each starts with journal[NAME])
+  filter(`Pr(&gt;|t|)` &lt; 10^-6) %&gt;% # only small p-values
+  mutate(journal = str_replace_all(journal, &quot;^journal&quot;, &quot;&quot;)) %&gt;% # remove &quot;journal&quot; at beginning of line
+  mutate(journal = ifelse(journal == &quot;Proceedings of the National Academy of Sciences of the United States of America&quot;, &quot;PNAS&quot;, journal))
+# last line---change to PNAS for better graph
+
+jrn_plot &lt;- ggplot(jrn_effects) + 
+  aes(x = Estimate, 
+      y = reorder(journal, Estimate), # a good way to reorder labels
+      fill = sign(Estimate)) + 
+  geom_col() + 
+  scale_fill_gradient2() + 
+  theme(legend.position = &quot;none&quot;) +
+  ylab(&quot;&quot;)
+
+show(jrn_plot)</code></pre>
+<p><img src="figure/jiujitsu.Rmd/Solution%20III-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>######################################
+# 5
+######################################
+
+# find journals that have published both open access and paywalled articles in a given year
+jr_year_oa_test &lt;- dd %&gt;% 
+  mutate(oa = ifelse(is.na(oa), &quot;pay&quot;, &quot;open&quot;)) %&gt;% 
+  group_by(journal, year, oa) %&gt;% 
+  tally() %&gt;% 
+  spread(oa, n, fill = 0) %&gt;% 
+  ungroup() %&gt;% 
+  filter(pay &gt; 0, open &gt; 0) %&gt;% 
+  arrange(desc(open), desc(pay))
+
+# now build data set for testing
+testset &lt;- dd %&gt;% 
+  inner_join(jr_year_oa_test)</code></pre>
+<pre><code>Joining, by = c(&quot;year&quot;, &quot;journal&quot;)</code></pre>
+<pre class="r"><code># finally, test whether OA has positive effect
+model_oa &lt;- lm(log(cits) ~ year:journal:multi:article + open, data = testset)
+# there are too many coeffs to plot---extract the second one
+head(summary(model_oa)$coefficients, 2)</code></pre>
+<pre><code>                Estimate   Std. Error   t value      Pr(&gt;|t|)
+(Intercept) 662.47240173 25.781625945 25.695525 8.198680e-122
+open          0.02887158  0.004037621  7.150641  1.319718e-12</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 18363)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] readxl_1.3.1    forcats_0.5.0   stringr_1.4.0   dplyr_1.0.2    
+ [5] purrr_0.3.4     readr_1.3.1     tidyr_1.1.2     tibble_3.0.3   
+ [9] ggplot2_3.3.2   tidyverse_1.3.0
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.1.0 xfun_0.17        haven_2.3.1      colorspace_1.4-1
+ [5] vctrs_0.3.4      generics_0.0.2   htmltools_0.5.0  yaml_2.2.1      
+ [9] utf8_1.1.4       blob_1.2.1       rlang_0.4.7      later_1.1.0.1   
+[13] pillar_1.4.6     withr_2.2.0      glue_1.4.2       DBI_1.1.0       
+[17] dbplyr_1.4.4     modelr_0.1.8     lifecycle_0.2.0  munsell_0.5.0   
+[21] gtable_0.3.0     workflowr_1.6.2  cellranger_1.1.0 rvest_0.3.6     
+[25] evaluate_0.14    labeling_0.3     knitr_1.29       httpuv_1.5.4    
+[29] fansi_0.4.1      broom_0.7.0      Rcpp_1.0.5       promises_1.1.1  
+[33] backports_1.1.9  scales_1.1.1     jsonlite_1.7.1   farver_2.0.3    
+[37] fs_1.5.0         hms_0.5.3        digest_0.6.25    stringi_1.5.3   
+[41] rprojroot_1.3-2  grid_4.0.2       cli_2.0.2        tools_4.0.2     
+[45] magrittr_1.5     crayon_1.3.4     whisker_0.4      pkgconfig_2.0.3 
+[49] ellipsis_0.3.1   xml2_1.3.2       reprex_0.3.0     lubridate_1.7.9 
+[53] assertthat_0.2.1 rmarkdown_2.3    httr_1.4.2       rstudioapi_0.11 
+[57] R6_2.4.1         git2r_0.27.1     compiler_4.0.2  </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
