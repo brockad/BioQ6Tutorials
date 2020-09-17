@@ -1,0 +1,123 @@
+---
+title: "populationgenetics"
+author: "brockad"
+date: "2020-09-17"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r Package Loading and getting data}
+library(tidyverse)
+library(reshape2)
+data <- c("H938_Euro_chr12.geno",
+          "H938_Euro_chr15.geno",
+          "H938_Euro_chr2.geno",
+          "H938_Euro_chr5.geno",
+          "H938_Euro_chr6.geno",
+          "H938_chr12.geno", 
+          "H938_chr15.geno", 
+          "H938_chr2.geno",
+          "H938_chr5.geno", 
+          "H938_chr6.geno") #Euro_chr2 for 
+
+#g <- read.table(paste0("data/",data[1]), header = TRUE)
+#g <- read.table(paste0("data/",data[2]), header = TRUE)
+g <- read.table(paste0("data/",data[3]), header = TRUE)
+#g <- read.table(paste0("data/",data[4]), header = TRUE)
+#g <- read.table(paste0("data/",data[5]), header = TRUE)
+#g <- read.table(paste0("data/",data[6]), header = TRUE)
+#g <- read.table(paste0("data/",data[7]), header = TRUE)
+#g <- read.table(paste0("data/",data[8]), header = TRUE)
+#g <- read.table(paste0("data/",data[9]), header = TRUE)
+#g <- read.table(paste0("data/",data[10]), header = TRUE)
+
+head(g)
+
+#Calculate number of observations in each individual
+g <- g %>%
+  mutate(nObs = nA1A1 + nA1A2 + nA2A2)
+#Question: Do most SNPS have complete data?
+summary(g$nObs)
+
+qplot(nObs, data = g)
+#Answer: Yes
+
+#Question what is lowest count...?
+#If 98.5 % of missingness of 938 expected minimum is 923
+938*0.985
+min(g$nObs)
+#Answer: 887, this number is in rough agreement.
+
+#Calculating genotype and allele frequencies
+
+g <- mutate(g, p11 = nA1A1/nObs, p12 = nA1A2/nObs, p22 = nA2A2/nObs)
+g <- mutate(g, p1 = p11 + 0.5*p12, p2 = p22 + 0.5*p12)
+
+qplot(p1,p2, data = g)
+
+model <- lm(g$p1~g$p2)
+summary(model)
+
+#Equation is p2 = -p1 + 1 ; p1 = -p2 + 1
+
+#Plotting genotype on allele frequencies
+
+gTidy <- select(g, c(p1,p11,p12,p22)) %>% melt(id='p1',value.name="Genotype.Proportion")
+head(gTidy)
+ggplot(gTidy) + geom_point(aes(x = p1,
+                               y = Genotype.Proportion, 
+                               color = variable,
+                               shape = variable))
+
+model_quad <- lm(gTidy$Genotype.Proportion ~ gTidy$p1 + gTidy$variable)
+summary(model_quad)
+
+ggplot(gTidy)+
+  geom_point(aes(x=p1,y=Genotype.Proportion,color=variable,shape=variable))+
+  stat_function(fun=function(p) p^2, geom="line", colour="red",size=2.5) +
+  stat_function(fun=function(p) 2*p*(1-p), geom="line", colour="green",size=2.5) +
+  stat_function(fun=function(p) (1-p)^2, geom="line", colour="blue",size=2.5)
+```
+
+Testing Hardy Weinberg:
+```{r Hardy Weinberg}
+g <- mutate(g, X2 = (nA1A1-nObs*p1^2)^2 /(nObs*p1^2) + 
+            (nA1A2-nObs*2*p1*p2)^2 / (nObs*2*p1*p2) + 
+            (nA2A2-nObs*p2^2)^2 / (nObs*p2^2))
+g <- mutate(g,pval = 1-pchisq(X2,1))
+
+head(g$pval)
+dim(as.matrix(g$pval))
+sum(g$pval < 0.05, na.rm = TRUE)
+14314/19560
+
+library(qvalue)
+qobj <- qvalue(p = g$pval)
+qplot(pval, data = g)
+hist(qobj)
+
+
+
+#plot expected vs observed heterozygosity
+qplot(2*p1*(1-p1), p12, data = g) + geom_abline(intercept = 0,
+                                                slope=1,
+                                                color="red",
+                                                size=1.5)
+
+mean(((2 * g$p1 * (1-g$p1)) - g$p12) / (2 * g$p1 * (1-g$p1)), na.rm = TRUE)
+g <- mutate(g, F = (2*p1*(1-p1)-p12) / (2*p1*(1-p1)))
+mean(g$F)
+plot(g$F, xlab = "SNP number")
+
+movingavg <- function(x, n=5){stats::filter(x, rep(1/n,n), sides = 2)}
+avgF <- movingavg(g$F)
+plot(avgF, xlab="SNP number")
+
+outlier=which (movingavg(g$F) == max(movingavg(g$F),na.rm=TRUE))
+outlier=which.max (avgF)
+g[outlier,]
+```
+

@@ -21,6 +21,7 @@ Welcome to my **first** research website. This page will house links to the vari
 ## Workshops:
 
 [Computational Immunobiology](immunobiology.html)
+[Poputlation Genetics](populationgenetics.html)
 
 ## Challenges:
 
