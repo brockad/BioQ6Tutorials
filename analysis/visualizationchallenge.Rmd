@@ -161,13 +161,13 @@ pheno_snp <- as_tibble(pheno) %>%
   select(id, BMD) %>% 
   mutate(id = as.double(id))
 
-snp_bmd <- full_join(geno_snp, pheno_snp) %>%
+snp_bmd <- full_join(geno_snp, pheno_snp)
+snp_bmd <- snp_bmd %>% 
   mutate(dosage = round(dosage),
-         dosage = factor(dosage)) %>%
-  drop_na(BMD, dosage) %>%
-  group_by(dosage) %>%
+         dosage = as.factor(dosage)) %>%
+  drop_na(BMD, dosage)
 
-ggplot(snp_bmd, aes(x = dosage, y = BMD, color = dosage)) + geom_boxplot() + labs(x = "Genotype\nTT (0) CT (1) CC (2)") + theme(legend.position = "none")
+ggplot(snp_bmd, aes(x = dosage, y = BMD, color = dosage)) + geom_boxplot() + labs(x = "Genotype\nTT (0) CT (1) CC (2)")
   
 ```
 
