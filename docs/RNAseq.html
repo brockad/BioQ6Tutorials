@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>RNAseq.utf8.md</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">BioQ6Tutorials</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/brockad/BioQ6Tutorials">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-09-18
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>BioQ6Tutorials/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20200915code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20200915)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20200915code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20200915)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcombrockadBioQ6Tutorialstreed5a574c8000dafa03c90365b4d2b2f850ccd32cftargetblankd5a574ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/brockad/BioQ6Tutorials/tree/d5a574c8000dafa03c90365b4d2b2f850ccd32cf" target="_blank">d5a574c</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcombrockadBioQ6Tutorialstreed5a574c8000dafa03c90365b4d2b2f850ccd32cftargetblankd5a574ca" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/brockad/BioQ6Tutorials/tree/d5a574c8000dafa03c90365b4d2b2f850ccd32cf" target="_blank">d5a574c</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/GSE116500_Limma_adj_4.csv.gz
+    Ignored:    data/H938_Euro_chr12.geno
+    Ignored:    data/H938_Euro_chr15.geno
+    Ignored:    data/H938_Euro_chr2.geno
+    Ignored:    data/H938_Euro_chr5.geno
+    Ignored:    data/H938_Euro_chr6.geno
+    Ignored:    data/H938_chr12.geno
+    Ignored:    data/H938_chr15.geno
+    Ignored:    data/H938_chr2.geno
+    Ignored:    data/H938_chr5.geno
+    Ignored:    data/H938_chr6.geno
+    Ignored:    data/bdata.20130222.mhci.txt
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/RNAseq.Rmd</code>) and HTML (<code>docs/RNAseq.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brockad/BioQ6Tutorials/blob/d5a574c8000dafa03c90365b4d2b2f850ccd32cf/analysis/RNAseq.Rmd" target="_blank">d5a574c</a>
+</td>
+<td>
+brockad
+</td>
+<td>
+2020-09-18
+</td>
+<td>
+Improved readability of RNASeq.Rmd
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/brockad/BioQ6Tutorials/blob/2a0c3dadb6d271a7f608b9a0dde99b90bee7f0f6/analysis/RNAseq.Rmd" target="_blank">2a0c3da</a>
+</td>
+<td>
+brockad
+</td>
+<td>
+2020-09-18
+</td>
+<td>
+RNASeq Workshop added
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="rna-seq-data-analysis-workshop" class="section level1">
+<h1>RNA-seq data analysis workshop</h1>
+<p>Instructor: <strong>Mengjie Chen</strong><br />
+Course Assistant: <strong>Kate Farris</strong></p>
+<div id="welcome" class="section level2">
+<h2>Welcome</h2>
+<p>This tutorial is going to walk you through basic RNA-seq data analysis using R. We will touch upon topics including quality control, differential expression analysis and downstream functional analysis.</p>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Transcriptomics is the study of the complete set of transcripts within a cell, which aims to document all species of transcripts, specifically mRNAs (along with ncRNAs), and quantify the gene expression levels during a particular biological process, in a development stage or under a set of unique pathological conditions like cancer. RNA-seq is a sequencing technique which uses next-generation sequencing (NGS) to reveal the presence and quantity of RNA in a biological sample at a given moment, analyzing the continuously changing cellular transcriptome. With maturation of NGS technologies, RNA-seq has become the main assay for transcriptomics studies.</p>
+<p>The basic steps of RNA-seq data analysis are: assessing read quality, pre-processing (trimming), alignment to reference genome or assembly, quantification (of expression levels), and downstream functional analysis. In this workshop, we will skip some pre-processing steps and assume reads haven been aligned to the reference genome.</p>
+</div>
+<div id="step-1-counting-reads-in-genes" class="section level2">
+<h2>Step 1: Counting reads in genes</h2>
+<p>We will examine 8 samples from the <code>airway</code> package, which are from the paper by Himes et al: “RNA-seq Transcriptome Profiling Identifies CRISPLD2 as a Glucocorticoid Responsive Gene that Modulates Cytokine Function in Airway Smooth Muscle Cells”.</p>
+<p>To install these packages you can use the code (or if you are compiling the document, remove the <code>eval=FALSE</code> from the chunk.)</p>
+<pre class="r"><code>install.packages(&quot;devtools&quot;)
+install.packages(&quot;pheatmap&quot;)
+BiocManager::install(c(&quot;airway&quot;,&quot;Rsamtools&quot;,&quot;Rsubread&quot;,&quot;DESeq2&quot;,&quot;vsn&quot;, &quot;org.Hs.eg.db&quot;,&quot;GenomicFeatures&quot;, &quot;clusterProfiler&quot;))</code></pre>
+<p>This workshop will focus on a summarized version of an RNA-seq experiment: a count matrix, which has genes along the rows and samples along the columns. The values in the matrix are the number of reads which could be uniquely aligned to the exons of a given gene for a given sample. We will demonstrate how to build a count matrix for a subset of reads from an experiment, and then use a pre-made count matrix, to avoid having students download the multi-gigabyte BAM files containing the aligned reads. A new pipeline for building count matrices, which skips the alignment step, is to use fast pseudoaligners such as <code>Sailfish</code>, <code>Salmon</code> and <code>kallisto</code>, followed by the <code>tximport</code> package. See the package vignette for more details. Here, we will continue with the read counting pipeline.</p>
+<p>First, make variables for the different BAM files and GTF file. Use the <code>sample.table</code> to contruct the BAM file vector, so that the count matrix will be in the same order as the <code>sample.table</code>.</p>
+<pre class="r"><code>library(airway)
+dir &lt;- system.file(&quot;extdata&quot;, package=&quot;airway&quot;, mustWork=TRUE)
+csv.file &lt;- file.path(dir, &quot;sample_table.csv&quot;)
+sample.table &lt;- read.csv(csv.file, row.names=1)
+bam.files &lt;- file.path(dir, paste0(sample.table$Run, &quot;_subset.bam&quot;))
+gtf.file &lt;- file.path(dir, &quot;Homo_sapiens.GRCh37.75_subset.gtf&quot;) </code></pre>
+<p>Next we create an <code>Rsamtools</code> variable which wraps our BAM files, and create a transcript database from the GTF file. We can ignore the warning about <code>matchCircularity</code>. Finally, we make a <code>GRangesList</code> which contains the exons for each gene.</p>
+<pre class="r"><code>library(Rsamtools)
+bam.list &lt;- BamFileList(bam.files)
+library(GenomicFeatures)
+txdb &lt;- makeTxDbFromGFF(gtf.file, format=&quot;gtf&quot;)
+exons.by.gene &lt;- exonsBy(txdb, by=&quot;gene&quot;)</code></pre>
+<p>The following code chunk creates a <code>SummarizedExperiment</code> containing the counts for the reads in each BAM file (columns) for each gene in <code>exons.by.gene</code> (the rows). We add the <code>sample.table</code> as column data. Remember, we know the order is correct, because the <code>bam.list</code> was constructed from a column of <code>sample.table</code>.</p>
+<pre class="r"><code>library(GenomicAlignments)
+se &lt;- summarizeOverlaps(exons.by.gene, bam.list,
+                        mode=&quot;Union&quot;,
+                        singleEnd=FALSE,
+                        ignore.strand=TRUE,
+                        fragments=TRUE)
+colData(se) &lt;- DataFrame(sample.table)</code></pre>
+<p><strong>Exercise</strong>: Can you check what is in the object <code>exons.by.gene</code>? Can you check what is in the object <code>se</code>?</p>
+</div>
+<div id="step-2-visualizing-sample-sample-distances" class="section level2">
+<h2>Step 2: Visualizing sample-sample distances</h2>
+<p>We now load the full <code>SummarizedExperiment</code> object, counting reads over all the genes.</p>
+<pre class="r"><code>library(airway)
+data(airway)
+airway</code></pre>
+<pre><code>class: RangedSummarizedExperiment 
+dim: 64102 8 
+metadata(1): &#39;&#39;
+assays(1): counts
+rownames(64102): ENSG00000000003 ENSG00000000005 ... LRG_98 LRG_99
+rowData names(0):
+colnames(8): SRR1039508 SRR1039509 ... SRR1039520 SRR1039521
+colData names(9): SampleName cell ... Sample BioSample</code></pre>
+<pre class="r"><code>colData(airway)</code></pre>
+<pre><code>DataFrame with 8 rows and 9 columns
+           SampleName     cell      dex    albut        Run avgLength
+             &lt;factor&gt; &lt;factor&gt; &lt;factor&gt; &lt;factor&gt;   &lt;factor&gt; &lt;integer&gt;
+SRR1039508 GSM1275862  N61311     untrt    untrt SRR1039508       126
+SRR1039509 GSM1275863  N61311     trt      untrt SRR1039509       126
+SRR1039512 GSM1275866  N052611    untrt    untrt SRR1039512       126
+SRR1039513 GSM1275867  N052611    trt      untrt SRR1039513        87
+SRR1039516 GSM1275870  N080611    untrt    untrt SRR1039516       120
+SRR1039517 GSM1275871  N080611    trt      untrt SRR1039517       126
+SRR1039520 GSM1275874  N061011    untrt    untrt SRR1039520       101
+SRR1039521 GSM1275875  N061011    trt      untrt SRR1039521        98
+           Experiment    Sample    BioSample
+             &lt;factor&gt;  &lt;factor&gt;     &lt;factor&gt;
+SRR1039508  SRX384345 SRS508568 SAMN02422669
+SRR1039509  SRX384346 SRS508567 SAMN02422675
+SRR1039512  SRX384349 SRS508571 SAMN02422678
+SRR1039513  SRX384350 SRS508572 SAMN02422670
+SRR1039516  SRX384353 SRS508575 SAMN02422682
+SRR1039517  SRX384354 SRS508576 SAMN02422673
+SRR1039520  SRX384357 SRS508579 SAMN02422683
+SRR1039521  SRX384358 SRS508580 SAMN02422677</code></pre>
+<pre class="r"><code>rowRanges(airway)</code></pre>
+<pre><code>GRangesList object of length 64102:
+$ENSG00000000003
+GRanges object with 17 ranges and 2 metadata columns:
+       seqnames            ranges strand |   exon_id       exon_name
+          &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; | &lt;integer&gt;     &lt;character&gt;
+   [1]        X 99883667-99884983      - |    667145 ENSE00001459322
+   [2]        X 99885756-99885863      - |    667146 ENSE00000868868
+   [3]        X 99887482-99887565      - |    667147 ENSE00000401072
+   [4]        X 99887538-99887565      - |    667148 ENSE00001849132
+   [5]        X 99888402-99888536      - |    667149 ENSE00003554016
+   ...      ...               ...    ... .       ...             ...
+  [13]        X 99890555-99890743      - |    667156 ENSE00003512331
+  [14]        X 99891188-99891686      - |    667158 ENSE00001886883
+  [15]        X 99891605-99891803      - |    667159 ENSE00001855382
+  [16]        X 99891790-99892101      - |    667160 ENSE00001863395
+  [17]        X 99894942-99894988      - |    667161 ENSE00001828996
+  -------
+  seqinfo: 722 sequences (1 circular) from an unspecified genome
+
+...
+&lt;64101 more elements&gt;</code></pre>
+<p>The counts matrix is stored in assay of a <code>SummarizedExperiment</code>.</p>
+<pre class="r"><code>head(assay(airway))</code></pre>
+<pre><code>                SRR1039508 SRR1039509 SRR1039512 SRR1039513 SRR1039516
+ENSG00000000003        679        448        873        408       1138
+ENSG00000000005          0          0          0          0          0
+ENSG00000000419        467        515        621        365        587
+ENSG00000000457        260        211        263        164        245
+ENSG00000000460         60         55         40         35         78
+ENSG00000000938          0          0          2          0          1
+                SRR1039517 SRR1039520 SRR1039521
+ENSG00000000003       1047        770        572
+ENSG00000000005          0          0          0
+ENSG00000000419        799        417        508
+ENSG00000000457        331        233        229
+ENSG00000000460         63         76         60
+ENSG00000000938          0          0          0</code></pre>
+<p>Note that, on the un-transformed scale, the high count genes have high variance. That is, in the following scatter plot, the points start out in a tight cone and then fan out toward the top right. This is a general property of counts generated from sampling processes, that the variance typically increases with the expected value. We will explore different scaling and transformations options below.</p>
+<p><strong>Exercise</strong>: Can you plot the first two columns of <code>assay(airway)</code>? What do you observe? Can you plot samples from two different cell lines? Can you plot samples from two different treatment groups? What do you observe?</p>
+<pre class="r"><code>plot(assay(airway)[,1:2], cex=.1)</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-6-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+</div>
+<div id="step-3-creating-a-deseqdataset-object" class="section level2">
+<h2>Step 3: Creating a <code>DESeqDataSet</code> object</h2>
+<p>We will use the <code>DESeq2</code> package to normalize the sample for sequencing depth. The <code>DESeqDataSet</code> object is just an extension of the <code>SummarizedExperiment</code> object, with a few changes. The matrix in assay is now accessed with counts and the elements of this matrix are required to be non-negative integers (0,1,2,…).</p>
+<p>We need to specify an experimental design here, for later use in differential analysis. The design starts with the tilde symbol <code>~</code>, which means, model the counts (log2 scale) using the following formula. Following the tilde, the variables are columns of the <code>colData</code>, and the <code>+</code> indicates that for differential expression analysis we want to compare levels of dex while controlling for the cell differences.</p>
+<pre class="r"><code>library(DESeq2)
+dds &lt;- DESeqDataSet(airway, design= ~ cell + dex)
+head(dds)</code></pre>
+<pre><code>class: DESeqDataSet 
+dim: 6 8 
+metadata(2): &#39;&#39; version
+assays(1): counts
+rownames(6): ENSG00000000003 ENSG00000000005 ... ENSG00000000460
+  ENSG00000000938
+rowData names(0):
+colnames(8): SRR1039508 SRR1039509 ... SRR1039520 SRR1039521
+colData names(9): SampleName cell ... Sample BioSample</code></pre>
+</div>
+<div id="step-4-normalization-for-sequencing-depth" class="section level2">
+<h2>Step 4: Normalization for sequencing depth</h2>
+<p>The goal of normalization: to make RNA-seq samples comparable by taking into account differences in sequencing depths of RNA-seq libraries. Typical normalization methods include quantile normalization, median of ratios and trimmed mean of M values. Normalization method in <code>DEseq2</code> is median of ratios, which counts for sequencing depth and RNA composition.</p>
+<p>Size factors in <code>DEseq2</code> are calculated by the median ratio of samples to a pseudo-sample (the geometric mean of all samples). In other words, for each sample, we take the exponent of the median of the log ratios in this histogram.</p>
+<pre class="r"><code>loggeomeans &lt;- rowMeans(log(counts(dds)))
+hist(log(counts(dds)[,1]) - loggeomeans, 
+     col=&quot;grey&quot;, main=&quot;&quot;, xlab=&quot;&quot;, breaks=40)</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-8-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p>The size factor for the first sample:</p>
+<pre class="r"><code>exp(median((log(counts(dds)[,1]) - loggeomeans)[is.finite(loggeomeans)]))</code></pre>
+<pre><code>[1] 1.023648</code></pre>
+<pre class="r"><code>sizeFactors(dds)[1]</code></pre>
+<pre><code>NULL</code></pre>
+<p>In <code>DEseq2</code>, a size factor will be estimated for each sample.</p>
+<pre class="r"><code>dds &lt;- estimateSizeFactors(dds)
+sizeFactors(dds)</code></pre>
+<pre><code>SRR1039508 SRR1039509 SRR1039512 SRR1039513 SRR1039516 SRR1039517 SRR1039520 
+ 1.0236476  0.8961667  1.1794861  0.6700538  1.1776714  1.3990365  0.9207787 
+SRR1039521 
+ 0.9445141 </code></pre>
+<pre class="r"><code>colSums(counts(dds))</code></pre>
+<pre><code>SRR1039508 SRR1039509 SRR1039512 SRR1039513 SRR1039516 SRR1039517 SRR1039520 
+  20637971   18809481   25348649   15163415   24448408   30818215   19126151 
+SRR1039521 
+  21164133 </code></pre>
+<pre class="r"><code>plot(sizeFactors(dds), colSums(counts(dds)))
+abline(lm(colSums(counts(dds)) ~ sizeFactors(dds) + 0))</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-13-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p><strong>Exercise</strong>: Is your calculated exponent of the median of the log ratios the same as output of function <code>sizeFactors</code>? Can you repeat the analysis for sample 5? Based on the above plot, what is the relationship between <code>sizeFactors(dds)</code> and column sum of count matrix? Are they equal? Why?</p>
+<p>Make a matrix of log normalized counts (plus a pseudocount):</p>
+<pre class="r"><code>log.norm.counts &lt;- log2(counts(dds, normalized=TRUE) + 1)</code></pre>
+<p>Another way to make this matrix, and keep the sample and gene information is to use the function <code>normTransform</code>. The same matrix as above is stored in <code>assay(log.norm)</code>.</p>
+<pre class="r"><code>log.norm &lt;- normTransform(dds)</code></pre>
+<p>Examine the log counts and the log normalized counts (plus a pseudocount).</p>
+<pre class="r"><code>rs &lt;- rowSums(counts(dds))
+par(mfrow=c(1,2))
+boxplot(log2(counts(dds)[rs &gt; 0,] + 1)) # not normalized
+boxplot(log.norm.counts[rs &gt; 0,]) # normalized</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-16-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p><strong>Exercise</strong>: How do you think of the normalization results? Are you satisfied? What happened after normalization? Make a scatterplot of log normalized counts against each other. Did you note the fanning out of the points in the lower left corner, for points less than 2^5=32? Would you concern about it? Can you repeat for Sample 3 vs. Sample 5?</p>
+<p>Make a scatterplot of log normalized counts against each other.</p>
+<pre class="r"><code>plot(log.norm.counts[,1:2], cex=.1)</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-17-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+</div>
+<div id="step-5-stabilizing-count-variance" class="section level2">
+<h2>Step 5: Stabilizing count variance</h2>
+<p>We will use a sophisticated transformation to address the variance for low counts. It uses the variance model for count data to shrink together the log-transformed counts for genes with very low counts. For genes with medium and high counts, the <code>rlog</code> is very close to <code>log2</code>.</p>
+<p>We use the argument <code>blind=FALSE</code> which means that the global dispersion trend should be estimated by considering the experimental design, but the design is not used for applying the transformation itself. See the <code>DESeq2</code> vignette for more details.</p>
+<pre class="r"><code>rld &lt;- rlog(dds, blind=FALSE)
+plot(assay(rld)[,1:2], cex=.1)</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-18-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p>Another transformation for stabilizing variance in the DESeq2 package is <code>varianceStabilizingTransformation</code>. These two tranformations are similar, the rlog might perform a bit better when the size factors vary widely, and the <code>varianceStabilizingTransformation</code> is much faster when there are many samples.</p>
+<pre class="r"><code>vsd &lt;- varianceStabilizingTransformation(dds, blind=FALSE)
+plot(assay(vsd)[,1:2], cex=.1)</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-19-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p>We can examine the standard deviation of rows over the mean for the log plus pseudocount and the rlog. Note that the genes with high variance for the log come from the genes with lowest mean. If these genes were included in a distance calculation, the high variance at the low count range might overwhelm the signal at the higher count range.</p>
+<pre class="r"><code>library(vsn)
+meanSdPlot(log.norm.counts, ranks=FALSE) </code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-20-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p><strong>Exercise</strong>: Can you compare the scatter plot of sample 1 and 2 before and after variance stablization transformation? Can you make a meanSdPlot for rlog and VST, respectively, and then compare those with untransformed data? Can you use the same ranges for Y axis? Does the transformation fix your previous problem on high variance of low counts?</p>
+<p>Hints for changing the Y ranges.</p>
+<pre class="r"><code>  library(&quot;ggplot2&quot;)
+  msd &lt;- meanSdPlot(assay(vsd), ranks=FALSE)</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-21-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<pre class="r"><code>  msd$gg + ggtitle(&quot;&quot;) + scale_y_continuous(limits = c(0, 1))  </code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-21-2.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p>Next we will introduce two useful analyses for visualization of sample to sample differences/distance. The principal components (PCA) plot is a useful diagnostic for examining relationships between samples. In PCA, the high dimensional data are projected into a lower dimensional space (usually 2D), where the largest variability is retained.</p>
+<pre class="r"><code>plotPCA(log.norm, intgroup=&quot;dex&quot;)</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-22-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p>In addition, we can plot a dendrogram based on hierarchical clustering on Euclidean distance matrix.</p>
+<pre class="r"><code>plot(hclust(dist(t(log.norm.counts))), labels=colData(dds)$dex)</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-23-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p><strong>Exercise</strong>: Can you make a PCA plot for rlog? Can you make a PCA plot for VST? How do you interpret PC1 and PC2 before and after variance Can you make a dendrogram for rlog and VST? Based on HC plot, can you comments on the effect of variance stablizing transformation?</p>
+</div>
+<div id="step-6-differential-gene-expression" class="section level2">
+<h2>Step 6: Differential gene expression</h2>
+<div id="modeling-counts-using-a-negative-binomial-distribution" class="section level3">
+<h3>1) Modeling counts using a negative binomial distribution</h3>
+<p>We will now perform differential gene expression on the counts, to try to find genes in which the differences in expected counts across samples due to the condition of interest rises above the biological and technical variance we observe.</p>
+<p>We will use an overdispersed Poisson distribution – called the negative binomial – to model the raw counts in the count matrix. The model will include the size factors into account to adjust for sequencing depth. The formula will look like:</p>
+<p><span class="math display">\[K_{ij} \propto \text{NB} (s_{ij}q_{ij}, \alpha_i)\]</span> where <span class="math inline">\(K_{ij}\)</span> is a single raw count in our count table, <span class="math inline">\(s_{ij}\)</span> is a size factor or more generally a normalization factor, <span class="math inline">\(q_{ij}\)</span> is proportional to gene expression (what we want to model with our design variables), and <span class="math inline">\(\alpha_i\)</span> is a dispersion parameter.</p>
+<p>For the negative binomial, the variance parameter is called disperison, and it links the mean value with the expected variance. The reason we see more dispersion than in a Poisson is mostly due to changes in the proportions of genes across biological replicates – which we would expect due to natural differences in gene expression.</p>
+<pre class="r"><code>par(mfrow=c(3,1))
+n &lt;- 10000
+brks &lt;- 0:400
+hist(rpois(n,lambda=100),
+     main=&quot;Poisson / NB, disp=0&quot;,xlab=&quot;&quot;,breaks=brks,col=&quot;black&quot;)
+hist(rnbinom(n,mu=100,size=1/.01),
+     main=&quot;NB, disp = 0.01&quot;,xlab=&quot;&quot;,breaks=brks,col=&quot;black&quot;)
+hist(rnbinom(n,mu=100,size=1/.1),
+     main=&quot;NB, disp = 0.1&quot;,xlab=&quot;&quot;,breaks=brks,col=&quot;black&quot;)</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-24-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p>The square root of the dispersion is the coefficient of variation – SD/mean – after subtracting the variance we expect due to Poisson sampling.</p>
+<pre class="r"><code>disp &lt;- 0.5
+mu &lt;- 100
+v &lt;- mu + disp * mu^2
+sqrt(v)/mu</code></pre>
+<pre><code>[1] 0.7141428</code></pre>
+<pre class="r"><code>sqrt(v - mu)/mu</code></pre>
+<pre><code>[1] 0.7071068</code></pre>
+<pre class="r"><code>sqrt(disp)</code></pre>
+<pre><code>[1] 0.7071068</code></pre>
+<p>A number of methods for assessing differential gene expression from RNA-seq counts use the negative binomial distribution to make probabilistic statements about the differences seen in an experiment. A few such methods are <code>edgeR</code>, <code>DESeq2</code>, and <code>DSS</code>. Other methods, such as <code>limma+voom</code> find other ways to explicitly model the mean of log counts and the observed variance of log counts.</p>
+<p><code>DESeq2</code> performs a similar step to <code>limma</code> in using the variance of all the genes to improve the variance estimate for each individual gene. In addition, <code>DESeq2</code> shrinks the unreliable fold changes from genes with low counts, which will be seen in the resulting MA-plot.</p>
+</div>
+<div id="experimental-design-and-running-deseq2" class="section level3">
+<h3>2) Experimental design and running DESeq2</h3>
+<p>Remember, we had created the <code>DESeqDataSet</code> object earlier using the following line of code (or alternatively using <code>DESeqDataSetFromMatrix)</code>.</p>
+<pre class="r"><code>dds &lt;- DESeqDataSet(airway, design= ~ cell + dex)</code></pre>
+<p>First, we setup the design of the experiment, so that differences will be considered across time and protocol variables. We can read and if necessary reset the design using the following code.</p>
+<pre class="r"><code>design(dds)</code></pre>
+<pre><code>~cell + dex</code></pre>
+<pre class="r"><code>design(dds) &lt;- ~ cell + dex</code></pre>
+<p>The last variable in the design is used by default for building results tables (although arguments to results can be used to customize the results table), and we make sure the “control” or “untreated” level is the first level, such that log fold changes will be treated over control, and not control over treated.</p>
+<pre class="r"><code>dds$dex &lt;- relevel(dds$dex, &quot;untrt&quot;)
+levels(dds$dex)</code></pre>
+<pre><code>[1] &quot;untrt&quot; &quot;trt&quot;  </code></pre>
+<p>The following line runs the <code>DESeq2</code> model. After this step, we can build a results table, which by default will compare the levels in the last variable in the design, so the dex treatment in our case:</p>
+<pre class="r"><code>dds &lt;- DESeq(dds)
+res &lt;- results(dds)</code></pre>
+</div>
+<div id="examining-results-tables" class="section level3">
+<h3>3) Examining results tables</h3>
+<pre class="r"><code>head(res)</code></pre>
+<pre><code>log2 fold change (MLE): dex trt vs untrt 
+Wald test p-value: dex trt vs untrt 
+DataFrame with 6 rows and 6 columns
+                  baseMean log2FoldChange     lfcSE      stat      pvalue
+                 &lt;numeric&gt;      &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;   &lt;numeric&gt;
+ENSG00000000003 708.602170     -0.3812539  0.100654 -3.787751 0.000152017
+ENSG00000000005   0.000000             NA        NA        NA          NA
+ENSG00000000419 520.297901      0.2068127  0.112219  1.842944 0.065337210
+ENSG00000000457 237.163037      0.0379206  0.143445  0.264357 0.791504963
+ENSG00000000460  57.932633     -0.0881677  0.287142 -0.307053 0.758803336
+ENSG00000000938   0.318098     -1.3782340  3.499875 -0.393795 0.693732273
+                      padj
+                 &lt;numeric&gt;
+ENSG00000000003 0.00128364
+ENSG00000000005         NA
+ENSG00000000419 0.19654584
+ENSG00000000457 0.91145800
+ENSG00000000460 0.89503445
+ENSG00000000938         NA</code></pre>
+<pre class="r"><code>table(res$padj &lt; 0.1)</code></pre>
+<pre><code>
+FALSE  TRUE 
+13209  4819 </code></pre>
+<p>A summary of the results can be generated:</p>
+<pre class="r"><code>summary(res)</code></pre>
+<pre><code>
+out of 33469 with nonzero total read count
+adjusted p-value &lt; 0.1
+LFC &gt; 0 (up)       : 2604, 7.8%
+LFC &lt; 0 (down)     : 2215, 6.6%
+outliers [1]       : 0, 0%
+low counts [2]     : 15441, 46%
+(mean count &lt; 5)
+[1] see &#39;cooksCutoff&#39; argument of ?results
+[2] see &#39;independentFiltering&#39; argument of ?results</code></pre>
+<p>For testing at a different threshold, we provide the alpha to results, so that the mean filtering is optimal for our new FDR threshold.</p>
+<pre class="r"><code>res2 &lt;- results(dds, alpha=0.05)
+table(res2$padj &lt; 0.05)</code></pre>
+<pre><code>
+FALSE  TRUE 
+12765  4028 </code></pre>
+</div>
+<div id="visualizing-results" class="section level3">
+<h3>4) Visualizing results</h3>
+<p>The MA-plot provides a global view of the differential genes, with the log2 fold change on the y-axis over the mean of normalized counts:</p>
+<pre class="r"><code>plotMA(res, ylim=c(-4,4))</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-33-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p>We can also test against a different null hypothesis. For example, to test for genes which have fold change more than doubling or less than halving:</p>
+<pre class="r"><code>res.thr &lt;- results(dds, lfcThreshold=1)
+plotMA(res.thr, ylim=c(-4,4))</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-34-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p>A sorted results table:</p>
+<pre class="r"><code>resSort &lt;- res[order(res$padj),]
+head(resSort)</code></pre>
+<pre><code>log2 fold change (MLE): dex trt vs untrt 
+Wald test p-value: dex trt vs untrt 
+DataFrame with 6 rows and 6 columns
+                 baseMean log2FoldChange     lfcSE      stat       pvalue
+                &lt;numeric&gt;      &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;    &lt;numeric&gt;
+ENSG00000152583   997.440        4.57492  0.184056   24.8561 2.22232e-136
+ENSG00000165995   495.093        3.29106  0.133174   24.7125 7.83976e-135
+ENSG00000120129  3409.029        2.94781  0.121438   24.2743 3.66732e-130
+ENSG00000101347 12703.387        3.76700  0.155438   24.2347 9.58234e-130
+ENSG00000189221  2341.767        3.35358  0.141782   23.6530 1.09937e-123
+ENSG00000211445 12285.615        3.73040  0.165831   22.4953 4.61814e-112
+                        padj
+                   &lt;numeric&gt;
+ENSG00000152583 4.00640e-132
+ENSG00000165995 7.06676e-131
+ENSG00000120129 2.20381e-126
+ENSG00000101347 4.31876e-126
+ENSG00000189221 3.96389e-120
+ENSG00000211445 1.38760e-108</code></pre>
+<p>Examine the counts for the top gene, sorting by p-value:</p>
+<pre class="r"><code>plotCounts(dds, gene=which.min(res$padj), intgroup=&quot;dex&quot;)</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-36-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p>A more sophisticated plot of counts:</p>
+<pre class="r"><code>library(ggplot2)
+data &lt;- plotCounts(dds, gene=which.min(res$padj), intgroup=c(&quot;dex&quot;,&quot;cell&quot;), returnData=TRUE)
+ggplot(data, aes(x=dex, y=count, col=cell)) +
+  geom_point(position=position_jitter(width=.1,height=0)) +
+  scale_y_log10()</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-37-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p>Connecting by lines shows the differences which are actually being tested by results given that our design includes cell + dex</p>
+<pre class="r"><code>ggplot(data, aes(x=dex, y=count, col=cell, group=cell)) +
+  geom_point() + geom_line() + scale_y_log10() </code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-38-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p>A heatmap of the top genes:</p>
+<pre class="r"><code>library(pheatmap)
+topgenes &lt;- head(rownames(resSort),20)
+mat &lt;- assay(rld)[topgenes,]
+mat &lt;- mat - rowMeans(mat)
+df &lt;- as.data.frame(colData(dds)[,c(&quot;dex&quot;,&quot;cell&quot;)])
+pheatmap(mat, annotation_col=df)</code></pre>
+<img src="figure/RNAseq.Rmd/unnamed-chunk-39-1.png" width="576" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was ignored by workflowr.
+</div>
+<p><strong>Exercise</strong>: Can you plot histogram for p-values? With what you have learned from previous lectures, is the histrogram with a desired shape? Can you make a heatmap based on top 50 genes? What do you observe?</p>
+</div>
+</div>
+<div id="getting-alternate-annotations" class="section level2">
+<h2>5) Getting alternate annotations</h2>
+<p>We can then check the annotation of these highly significant genes:</p>
+<pre class="r"><code>library(org.Hs.eg.db)
+keytypes(org.Hs.eg.db)</code></pre>
+<pre><code> [1] &quot;ACCNUM&quot;       &quot;ALIAS&quot;        &quot;ENSEMBL&quot;      &quot;ENSEMBLPROT&quot;  &quot;ENSEMBLTRANS&quot;
+ [6] &quot;ENTREZID&quot;     &quot;ENZYME&quot;       &quot;EVIDENCE&quot;     &quot;EVIDENCEALL&quot;  &quot;GENENAME&quot;    
+[11] &quot;GO&quot;           &quot;GOALL&quot;        &quot;IPI&quot;          &quot;MAP&quot;          &quot;OMIM&quot;        
+[16] &quot;ONTOLOGY&quot;     &quot;ONTOLOGYALL&quot;  &quot;PATH&quot;         &quot;PFAM&quot;         &quot;PMID&quot;        
+[21] &quot;PROSITE&quot;      &quot;REFSEQ&quot;       &quot;SYMBOL&quot;       &quot;UCSCKG&quot;       &quot;UNIGENE&quot;     
+[26] &quot;UNIPROT&quot;     </code></pre>
+<pre class="r"><code>anno &lt;- select(org.Hs.eg.db, keys=topgenes,
+               columns=c(&quot;SYMBOL&quot;,&quot;GENENAME&quot;), 
+               keytype=&quot;ENSEMBL&quot;)
+anno[match(topgenes, anno$ENSEMBL),]</code></pre>
+<pre><code>           ENSEMBL  SYMBOL
+1  ENSG00000152583 SPARCL1
+2  ENSG00000165995  CACNB2
+3  ENSG00000120129   DUSP1
+4  ENSG00000101347  SAMHD1
+5  ENSG00000189221    MAOA
+6  ENSG00000211445    GPX3
+7  ENSG00000157214  STEAP2
+8  ENSG00000162614    NEXN
+9  ENSG00000125148    MT2A
+10 ENSG00000154734 ADAMTS1
+11 ENSG00000139132    FGD4
+12 ENSG00000162493    PDPN
+13 ENSG00000134243   SORT1
+14 ENSG00000179094    PER1
+15 ENSG00000162692   VCAM1
+16 ENSG00000163884   KLF15
+17 ENSG00000178695  KCTD12
+18 ENSG00000198624  CCDC69
+19 ENSG00000107562  CXCL12
+20 ENSG00000148848  ADAM12
+                                                                          GENENAME
+1                                                                     SPARC like 1
+2                           calcium voltage-gated channel auxiliary subunit beta 2
+3                                                   dual specificity phosphatase 1
+4  SAM and HD domain containing deoxynucleoside triphosphate triphosphohydrolase 1
+5                                                              monoamine oxidase A
+6                                                         glutathione peroxidase 3
+7                                                          STEAP2 metalloreductase
+8                                                  nexilin F-actin binding protein
+9                                                               metallothionein 2A
+10                        ADAM metallopeptidase with thrombospondin type 1 motif 1
+11                                         FYVE, RhoGEF and PH domain containing 4
+12                                                                      podoplanin
+13                                                                      sortilin 1
+14                                                    period circadian regulator 1
+15                                               vascular cell adhesion molecule 1
+16                                                          Kruppel like factor 15
+17                          potassium channel tetramerization domain containing 12
+18                                                coiled-coil domain containing 69
+19                                                 C-X-C motif chemokine ligand 12
+20                                                 ADAM metallopeptidase domain 12</code></pre>
+<p><strong>Exercise</strong>: Based on the annotation, what is biological functions of top genes? Can you run a GO enrichment analysis using top 100 genes? You can use the following package or this website (<a href="http://geneontology.org/page/go-enrichment-analysis" class="uri">http://geneontology.org/page/go-enrichment-analysis</a>).</p>
+<pre class="r"><code>library(clusterProfiler)
+top100genes &lt;- head(rownames(resSort), 100)
+annoList &lt;- anno[match(top100genes, anno$ENSEMBL),]
+ego &lt;- enrichGO(gene          = annoList$ENSEMBL,
+                universe      = rownames(resSort),
+                OrgDb         = org.Hs.eg.db,
+                keyType       = &#39;ENSEMBL&#39;,
+                ont           = &quot;CC&quot;,
+                pAdjustMethod = &quot;BH&quot;,
+                pvalueCutoff  = 0.01,
+                qvalueCutoff  = 0.05,
+                readable      = TRUE)
+head(ego)</code></pre>
+<pre><code>                   ID                      Description GeneRatio   BgRatio
+GO:0097197 GO:0097197 tetraspanin-enriched microdomain      2/20  10/19691
+GO:0030175 GO:0030175                       filopodium      3/20 115/19691
+                 pvalue    p.adjust      qvalue          geneID Count
+GO:0097197 4.388991e-05 0.003247854 0.002448595     SAMHD1/PDPN     2
+GO:0030175 2.057519e-04 0.007612820 0.005739395 FGD4/PDPN/VCAM1     3</code></pre>
+</div>
+<div id="looking-up-different-results-tables" class="section level2">
+<h2>6) Looking up different results tables</h2>
+<p>The <code>contrast</code> argument allows users to specify what results table should be built. See the help and examples in <code>?results</code> for more details:</p>
+<pre class="r"><code>results(dds, contrast=c(&quot;cell&quot;,&quot;N061011&quot;,&quot;N080611&quot;))</code></pre>
+<pre><code>log2 fold change (MLE): cell N061011 vs N080611 
+Wald test p-value: cell N061011 vs N080611 
+DataFrame with 64102 rows and 6 columns
+                 baseMean log2FoldChange     lfcSE      stat    pvalue
+                &lt;numeric&gt;      &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;
+ENSG00000000003  708.6022      -0.255563  0.140161 -1.823351 0.0682503
+ENSG00000000005    0.0000             NA        NA        NA        NA
+ENSG00000000419  520.2979      -0.111890  0.157869 -0.708755 0.4784768
+ENSG00000000457  237.1630       0.156273  0.201092  0.777121 0.4370874
+ENSG00000000460   57.9326       0.398216  0.396313  1.004800 0.3149930
+...                   ...            ...       ...       ...       ...
+LRG_94                  0             NA        NA        NA        NA
+LRG_96                  0             NA        NA        NA        NA
+LRG_97                  0             NA        NA        NA        NA
+LRG_98                  0             NA        NA        NA        NA
+LRG_99                  0             NA        NA        NA        NA
+                     padj
+                &lt;numeric&gt;
+ENSG00000000003  0.297821
+ENSG00000000005        NA
+ENSG00000000419  0.798565
+ENSG00000000457  0.769379
+ENSG00000000460  0.670245
+...                   ...
+LRG_94                 NA
+LRG_96                 NA
+LRG_97                 NA
+LRG_98                 NA
+LRG_99                 NA</code></pre>
+<p><strong>Exercise</strong>: Would you check the biological functions of top significantly differential expressed genes between cell line N061011 and N080611? Would you perform GO enrichment analysis on top genes as well? Any significant findings? Do you want to make any conclusion? Why or why not?</p>
+<p>Hints:</p>
+<pre class="r"><code>res_contrast &lt;- results(dds, contrast=c(&quot;cell&quot;,&quot;N061011&quot;,&quot;N61311&quot;))
+res_contrastSort &lt;- res_contrast[order(res_contrast$padj),]
+top100genes &lt;- head(rownames(res_contrastSort), 100)
+annoList &lt;- anno[match(top100genes, anno$ENSEMBL),]
+ego &lt;- enrichGO(gene          = annoList$ENSEMBL,
+                OrgDb         = org.Hs.eg.db,
+                universe      = rownames(res_contrastSort),
+                keyType       = &#39;ENSEMBL&#39;,
+                ont           = &quot;CC&quot;,
+                pAdjustMethod = &quot;BH&quot;,
+                pvalueCutoff  = 0.01,
+                qvalueCutoff  = 0.05,
+                readable      = TRUE)
+head(ego)</code></pre>
+<pre><code>                   ID                      Description GeneRatio  BgRatio
+GO:0097197 GO:0097197 tetraspanin-enriched microdomain       1/1 10/19691
+GO:0071437 GO:0071437                     invadopodium       1/1 16/19691
+GO:0031258 GO:0031258           lamellipodium membrane       1/1 22/19691
+GO:0031528 GO:0031528             microvillus membrane       1/1 22/19691
+GO:0031527 GO:0031527              filopodium membrane       1/1 24/19691
+                 pvalue    p.adjust qvalue geneID Count
+GO:0097197 0.0005078462 0.004875324     NA   PDPN     1
+GO:0071437 0.0008125540 0.004875324     NA   PDPN     1
+GO:0031258 0.0011172617 0.004875324     NA   PDPN     1
+GO:0031528 0.0011172617 0.004875324     NA   PDPN     1
+GO:0031527 0.0012188309 0.004875324     NA   PDPN     1</code></pre>
+<div id="follow-up-activities" class="section level3">
+<h3>Follow-up activities</h3>
+<p><code>DESeq2</code> can be used to analyze time course experiments, for example to find those genes that react in a condition-specific manner over time, compared to a set of baseline samples. Here we demonstrate a basic time course analysis with the fission data package, which contains gene counts for an RNA-seq time course of fission yeast (Leong et al. 2014). The yeast were exposed to oxidative stress, and half of the samples contained a deletion of the gene <code>atf21</code>. We use a design formula that models the strain difference at time 0, the difference over time, and any strain-specific differences over time (the interaction term strain:minute).</p>
+<pre class="r"><code>library(&quot;fission&quot;)
+data(&quot;fission&quot;)
+ddsTC &lt;- DESeqDataSet(fission, ~ strain + minute + strain:minute)</code></pre>
+<p>The following chunk of code performs a likelihood ratio test, where we remove the strain-specific differences over time. Genes with small p values from this test are those which at one or more time points after time 0 showed a strain-specific effect.</p>
+<pre class="r"><code>ddsTC &lt;- DESeq(ddsTC, test=&quot;LRT&quot;, reduced = ~ strain + minute)</code></pre>
+<p><strong>Exercise</strong>: Can you visualize results from the above analysis? Can you perform functional analysis? Can you propose other tests on this dataset?</p>
+</div>
+</div>
+<div id="acknowledgement" class="section level2">
+<h2>Acknowledgement</h2>
+<p>This workshop contains online materials written by Rafael Irizarry and Michael Love.</p>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<p>Here is the session information.</p>
+<pre class="r"><code>devtools::session_info()</code></pre>
+<pre><code>- Session info ---------------------------------------------------------------
+ setting  value                       
+ version  R version 4.0.2 (2020-06-22)
+ os       Windows 10 x64              
+ system   x86_64, mingw32             
+ ui       RTerm                       
+ language (EN)                        
+ collate  English_United States.1252  
+ ctype    English_United States.1252  
+ tz       America/Chicago             
+ date     2020-09-18                  
+
+- Packages -------------------------------------------------------------------
+ package              * version  date       lib source        
+ affy                   1.66.0   2020-04-27 [1] Bioconductor  
+ affyio                 1.58.0   2020-04-27 [1] Bioconductor  
+ airway               * 1.8.0    2020-05-07 [1] Bioconductor  
+ annotate               1.66.0   2020-04-27 [1] Bioconductor  
+ AnnotationDbi        * 1.50.3   2020-07-25 [1] Bioconductor  
+ askpass                1.1      2019-01-13 [1] CRAN (R 4.0.2)
+ assertthat             0.2.1    2019-03-21 [1] CRAN (R 4.0.2)
+ backports              1.1.9    2020-08-24 [1] CRAN (R 4.0.2)
+ Biobase              * 2.48.0   2020-04-27 [1] Bioconductor  
+ BiocFileCache          1.12.1   2020-08-04 [1] Bioconductor  
+ BiocGenerics         * 0.34.0   2020-04-27 [1] Bioconductor  
+ BiocManager            1.30.10  2019-11-16 [1] CRAN (R 4.0.2)
+ BiocParallel           1.22.0   2020-04-27 [1] Bioconductor  
+ biomaRt                2.44.1   2020-06-17 [1] Bioconductor  
+ Biostrings           * 2.56.0   2020-04-27 [1] Bioconductor  
+ bit                    4.0.4    2020-08-04 [1] CRAN (R 4.0.2)
+ bit64                  4.0.5    2020-08-30 [1] CRAN (R 4.0.2)
+ bitops                 1.0-6    2013-08-17 [1] CRAN (R 4.0.0)
+ blob                   1.2.1    2020-01-20 [1] CRAN (R 4.0.2)
+ callr                  3.4.4    2020-09-07 [1] CRAN (R 4.0.2)
+ cli                    2.0.2    2020-02-28 [1] CRAN (R 4.0.2)
+ clusterProfiler      * 3.16.1   2020-08-18 [1] Bioconductor  
+ colorspace             1.4-1    2019-03-18 [1] CRAN (R 4.0.2)
+ cowplot                1.1.0    2020-09-08 [1] CRAN (R 4.0.2)
+ crayon                 1.3.4    2017-09-16 [1] CRAN (R 4.0.2)
+ curl                   4.3      2019-12-02 [1] CRAN (R 4.0.2)
+ data.table             1.13.0   2020-07-24 [1] CRAN (R 4.0.2)
+ DBI                    1.1.0    2019-12-15 [1] CRAN (R 4.0.2)
+ dbplyr                 1.4.4    2020-05-27 [1] CRAN (R 4.0.2)
+ DelayedArray         * 0.14.1   2020-07-15 [1] Bioconductor  
+ desc                   1.2.0    2018-05-01 [1] CRAN (R 4.0.2)
+ DESeq2               * 1.28.1   2020-05-12 [1] Bioconductor  
+ devtools               2.3.2    2020-09-18 [1] CRAN (R 4.0.2)
+ digest                 0.6.25   2020-02-23 [1] CRAN (R 4.0.2)
+ DO.db                  2.9      2020-09-13 [1] Bioconductor  
+ DOSE                   3.14.0   2020-04-27 [1] Bioconductor  
+ downloader             0.4      2015-07-09 [1] CRAN (R 4.0.2)
+ dplyr                  1.0.2    2020-08-18 [1] CRAN (R 4.0.2)
+ ellipsis               0.3.1    2020-05-15 [1] CRAN (R 4.0.2)
+ enrichplot             1.8.1    2020-04-29 [1] Bioconductor  
+ europepmc              0.4      2020-05-31 [1] CRAN (R 4.0.2)
+ evaluate               0.14     2019-05-28 [1] CRAN (R 4.0.2)
+ fansi                  0.4.1    2020-01-08 [1] CRAN (R 4.0.2)
+ farver                 2.0.3    2020-01-16 [1] CRAN (R 4.0.2)
+ fastmatch              1.1-0    2017-01-28 [1] CRAN (R 4.0.0)
+ fgsea                  1.14.0   2020-04-27 [1] Bioconductor  
+ fission              * 1.8.0    2020-05-07 [1] Bioconductor  
+ fs                     1.5.0    2020-07-31 [1] CRAN (R 4.0.2)
+ genefilter             1.70.0   2020-04-27 [1] Bioconductor  
+ geneplotter            1.66.0   2020-04-27 [1] Bioconductor  
+ generics               0.0.2    2018-11-29 [1] CRAN (R 4.0.2)
+ GenomeInfoDb         * 1.24.2   2020-06-15 [1] Bioconductor  
+ GenomeInfoDbData       1.2.3    2020-09-13 [1] Bioconductor  
+ GenomicAlignments    * 1.24.0   2020-04-27 [1] Bioconductor  
+ GenomicFeatures      * 1.40.1   2020-07-08 [1] Bioconductor  
+ GenomicRanges        * 1.40.0   2020-04-27 [1] Bioconductor  
+ ggforce                0.3.2    2020-06-23 [1] CRAN (R 4.0.2)
+ ggplot2              * 3.3.2    2020-06-19 [1] CRAN (R 4.0.2)
+ ggplotify              0.0.5    2020-03-12 [1] CRAN (R 4.0.2)
+ ggraph                 2.0.3    2020-05-20 [1] CRAN (R 4.0.2)
+ ggrepel                0.8.2    2020-03-08 [1] CRAN (R 4.0.2)
+ ggridges               0.5.2    2020-01-12 [1] CRAN (R 4.0.2)
+ git2r                  0.27.1   2020-05-03 [1] CRAN (R 4.0.2)
+ glue                   1.4.2    2020-08-27 [1] CRAN (R 4.0.2)
+ GO.db                  3.11.4   2020-09-13 [1] Bioconductor  
+ GOSemSim               2.14.2   2020-09-04 [1] Bioconductor  
+ graphlayouts           0.7.0    2020-04-25 [1] CRAN (R 4.0.2)
+ gridExtra              2.3      2017-09-09 [1] CRAN (R 4.0.2)
+ gridGraphics           0.5-0    2020-02-25 [1] CRAN (R 4.0.2)
+ gtable                 0.3.0    2019-03-25 [1] CRAN (R 4.0.2)
+ hexbin                 1.28.1   2020-02-03 [1] CRAN (R 4.0.2)
+ hms                    0.5.3    2020-01-08 [1] CRAN (R 4.0.2)
+ htmltools              0.5.0    2020-06-16 [1] CRAN (R 4.0.2)
+ httpuv                 1.5.4    2020-06-06 [1] CRAN (R 4.0.2)
+ httr                   1.4.2    2020-07-20 [1] CRAN (R 4.0.2)
+ igraph                 1.2.5    2020-03-19 [1] CRAN (R 4.0.2)
+ IRanges              * 2.22.2   2020-05-21 [1] Bioconductor  
+ jsonlite               1.7.1    2020-09-07 [1] CRAN (R 4.0.2)
+ knitr                  1.29     2020-06-23 [1] CRAN (R 4.0.2)
+ labeling               0.3      2014-08-23 [1] CRAN (R 4.0.0)
+ later                  1.1.0.1  2020-06-05 [1] CRAN (R 4.0.2)
+ lattice                0.20-41  2020-04-02 [2] CRAN (R 4.0.2)
+ lifecycle              0.2.0    2020-03-06 [1] CRAN (R 4.0.2)
+ limma                  3.44.3   2020-06-12 [1] Bioconductor  
+ locfit                 1.5-9.4  2020-03-25 [1] CRAN (R 4.0.2)
+ magrittr               1.5      2014-11-22 [1] CRAN (R 4.0.2)
+ MASS                   7.3-51.6 2020-04-26 [2] CRAN (R 4.0.2)
+ Matrix                 1.2-18   2019-11-27 [2] CRAN (R 4.0.2)
+ matrixStats          * 0.56.0   2020-03-13 [1] CRAN (R 4.0.2)
+ memoise                1.1.0    2017-04-21 [1] CRAN (R 4.0.2)
+ munsell                0.5.0    2018-06-12 [1] CRAN (R 4.0.2)
+ openssl                1.4.2    2020-06-27 [1] CRAN (R 4.0.2)
+ org.Hs.eg.db         * 3.11.4   2020-09-13 [1] Bioconductor  
+ pheatmap             * 1.0.12   2019-01-04 [1] CRAN (R 4.0.2)
+ pillar                 1.4.6    2020-07-10 [1] CRAN (R 4.0.2)
+ pkgbuild               1.1.0    2020-07-13 [1] CRAN (R 4.0.2)
+ pkgconfig              2.0.3    2019-09-22 [1] CRAN (R 4.0.2)
+ pkgload                1.1.0    2020-05-29 [1] CRAN (R 4.0.2)
+ plyr                   1.8.6    2020-03-03 [1] CRAN (R 4.0.2)
+ polyclip               1.10-0   2019-03-14 [1] CRAN (R 4.0.0)
+ preprocessCore         1.50.0   2020-04-27 [1] Bioconductor  
+ prettyunits            1.1.1    2020-01-24 [1] CRAN (R 4.0.2)
+ processx               3.4.4    2020-09-03 [1] CRAN (R 4.0.2)
+ progress               1.2.2    2019-05-16 [1] CRAN (R 4.0.2)
+ promises               1.1.1    2020-06-09 [1] CRAN (R 4.0.2)
+ ps                     1.3.4    2020-08-11 [1] CRAN (R 4.0.2)
+ purrr                  0.3.4    2020-04-17 [1] CRAN (R 4.0.2)
+ qvalue                 2.20.0   2020-04-27 [1] Bioconductor  
+ R6                     2.4.1    2019-11-12 [1] CRAN (R 4.0.2)
+ rappdirs               0.3.1    2016-03-28 [1] CRAN (R 4.0.2)
+ RColorBrewer           1.1-2    2014-12-07 [1] CRAN (R 4.0.0)
+ Rcpp                   1.0.5    2020-07-06 [1] CRAN (R 4.0.2)
+ RCurl                  1.98-1.2 2020-04-18 [1] CRAN (R 4.0.2)
+ remotes                2.2.0    2020-07-21 [1] CRAN (R 4.0.2)
+ reshape2               1.4.4    2020-04-09 [1] CRAN (R 4.0.2)
+ rlang                  0.4.7    2020-07-09 [1] CRAN (R 4.0.2)
+ rmarkdown              2.3      2020-06-18 [1] CRAN (R 4.0.2)
+ rprojroot              1.3-2    2018-01-03 [1] CRAN (R 4.0.2)
+ Rsamtools            * 2.4.0    2020-04-27 [1] Bioconductor  
+ RSQLite                2.2.0    2020-01-07 [1] CRAN (R 4.0.2)
+ rstudioapi             0.11     2020-02-07 [1] CRAN (R 4.0.2)
+ rtracklayer            1.48.0   2020-04-27 [1] Bioconductor  
+ rvcheck                0.1.8    2020-03-01 [1] CRAN (R 4.0.2)
+ S4Vectors            * 0.26.1   2020-05-16 [1] Bioconductor  
+ scales                 1.1.1    2020-05-11 [1] CRAN (R 4.0.2)
+ scatterpie             0.1.5    2020-09-09 [1] CRAN (R 4.0.2)
+ sessioninfo            1.1.1    2018-11-05 [1] CRAN (R 4.0.2)
+ snow                   0.4-3    2018-09-14 [1] CRAN (R 4.0.0)
+ stringi                1.5.3    2020-09-09 [1] CRAN (R 4.0.2)
+ stringr                1.4.0    2019-02-10 [1] CRAN (R 4.0.2)
+ SummarizedExperiment * 1.18.2   2020-07-09 [1] Bioconductor  
+ survival               3.1-12   2020-04-10 [2] CRAN (R 4.0.2)
+ testthat               2.3.2    2020-03-02 [1] CRAN (R 4.0.2)
+ tibble                 3.0.3    2020-07-10 [1] CRAN (R 4.0.2)
+ tidygraph              1.2.0    2020-05-12 [1] CRAN (R 4.0.2)
+ tidyr                  1.1.2    2020-08-27 [1] CRAN (R 4.0.2)
+ tidyselect             1.1.0    2020-05-11 [1] CRAN (R 4.0.2)
+ triebeard              0.3.0    2016-08-04 [1] CRAN (R 4.0.2)
+ tweenr                 1.0.1    2018-12-14 [1] CRAN (R 4.0.2)
+ urltools               1.7.3    2019-04-14 [1] CRAN (R 4.0.2)
+ usethis                1.6.3    2020-09-17 [1] CRAN (R 4.0.2)
+ vctrs                  0.3.4    2020-08-29 [1] CRAN (R 4.0.2)
+ viridis                0.5.1    2018-03-29 [1] CRAN (R 4.0.2)
+ viridisLite            0.3.0    2018-02-01 [1] CRAN (R 4.0.2)
+ vsn                  * 3.56.0   2020-04-27 [1] Bioconductor  
+ whisker                0.4      2019-08-28 [1] CRAN (R 4.0.2)
+ withr                  2.2.0    2020-04-20 [1] CRAN (R 4.0.2)
+ workflowr              1.6.2    2020-04-30 [1] CRAN (R 4.0.2)
+ xfun                   0.17     2020-09-09 [1] CRAN (R 4.0.2)
+ XML                    3.99-0.5 2020-07-23 [1] CRAN (R 4.0.2)
+ xml2                   1.3.2    2020-04-23 [1] CRAN (R 4.0.2)
+ xtable                 1.8-4    2019-04-21 [1] CRAN (R 4.0.2)
+ XVector              * 0.28.0   2020-04-27 [1] Bioconductor  
+ yaml                   2.2.1    2020-02-01 [1] CRAN (R 4.0.2)
+ zlibbioc               1.34.0   2020-04-27 [1] Bioconductor  
+
+[1] C:/Users/Brock/Documents/R/win-library/4.0
+[2] C:/Program Files/R/R-4.0.2/library</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 18363)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] fission_1.8.0               clusterProfiler_3.16.1     
+ [3] org.Hs.eg.db_3.11.4         pheatmap_1.0.12            
+ [5] ggplot2_3.3.2               vsn_3.56.0                 
+ [7] DESeq2_1.28.1               GenomicAlignments_1.24.0   
+ [9] GenomicFeatures_1.40.1      AnnotationDbi_1.50.3       
+[11] Rsamtools_2.4.0             Biostrings_2.56.0          
+[13] XVector_0.28.0              airway_1.8.0               
+[15] SummarizedExperiment_1.18.2 DelayedArray_0.14.1        
+[17] matrixStats_0.56.0          Biobase_2.48.0             
+[19] GenomicRanges_1.40.0        GenomeInfoDb_1.24.2        
+[21] IRanges_2.22.2              S4Vectors_0.26.1           
+[23] BiocGenerics_0.34.0        
+
+loaded via a namespace (and not attached):
+  [1] snow_0.4-3             backports_1.1.9        fastmatch_1.1-0       
+  [4] workflowr_1.6.2        BiocFileCache_1.12.1   plyr_1.8.6            
+  [7] igraph_1.2.5           splines_4.0.2          BiocParallel_1.22.0   
+ [10] usethis_1.6.3          urltools_1.7.3         digest_0.6.25         
+ [13] htmltools_0.5.0        GOSemSim_2.14.2        viridis_0.5.1         
+ [16] GO.db_3.11.4           fansi_0.4.1            magrittr_1.5          
+ [19] memoise_1.1.0          remotes_2.2.0          limma_3.44.3          
+ [22] annotate_1.66.0        graphlayouts_0.7.0     askpass_1.1           
+ [25] enrichplot_1.8.1       prettyunits_1.1.1      colorspace_1.4-1      
+ [28] blob_1.2.1             rappdirs_0.3.1         ggrepel_0.8.2         
+ [31] xfun_0.17              dplyr_1.0.2            callr_3.4.4           
+ [34] jsonlite_1.7.1         crayon_1.3.4           RCurl_1.98-1.2        
+ [37] hexbin_1.28.1          scatterpie_0.1.5       genefilter_1.70.0     
+ [40] survival_3.1-12        glue_1.4.2             polyclip_1.10-0       
+ [43] gtable_0.3.0           zlibbioc_1.34.0        pkgbuild_1.1.0        
+ [46] scales_1.1.1           DOSE_3.14.0            DBI_1.1.0             
+ [49] Rcpp_1.0.5             viridisLite_0.3.0      xtable_1.8-4          
+ [52] progress_1.2.2         gridGraphics_0.5-0     bit_4.0.4             
+ [55] europepmc_0.4          preprocessCore_1.50.0  httr_1.4.2            
+ [58] fgsea_1.14.0           RColorBrewer_1.1-2     ellipsis_0.3.1        
+ [61] pkgconfig_2.0.3        XML_3.99-0.5           farver_2.0.3          
+ [64] dbplyr_1.4.4           locfit_1.5-9.4         ggplotify_0.0.5       
+ [67] tidyselect_1.1.0       labeling_0.3           rlang_0.4.7           
+ [70] reshape2_1.4.4         later_1.1.0.1          munsell_0.5.0         
+ [73] tools_4.0.2            cli_2.0.2              downloader_0.4        
+ [76] generics_0.0.2         RSQLite_2.2.0          devtools_2.3.2        
+ [79] ggridges_0.5.2         evaluate_0.14          stringr_1.4.0         
+ [82] yaml_2.2.1             processx_3.4.4         knitr_1.29            
+ [85] bit64_4.0.5            fs_1.5.0               tidygraph_1.2.0       
+ [88] purrr_0.3.4            ggraph_2.0.3           whisker_0.4           
+ [91] xml2_1.3.2             DO.db_2.9              biomaRt_2.44.1        
+ [94] compiler_4.0.2         rstudioapi_0.11        curl_4.3              
+ [97] testthat_2.3.2         affyio_1.58.0          tibble_3.0.3          
+[100] tweenr_1.0.1           geneplotter_1.66.0     stringi_1.5.3         
+[103] ps_1.3.4               desc_1.2.0             lattice_0.20-41       
+[106] Matrix_1.2-18          vctrs_0.3.4            pillar_1.4.6          
+[109] lifecycle_0.2.0        BiocManager_1.30.10    triebeard_0.3.0       
+[112] data.table_1.13.0      cowplot_1.1.0          bitops_1.0-6          
+[115] httpuv_1.5.4           rtracklayer_1.48.0     qvalue_2.20.0         
+[118] R6_2.4.1               affy_1.66.0            promises_1.1.1        
+[121] gridExtra_2.3          sessioninfo_1.1.1      pkgload_1.1.0         
+[124] MASS_7.3-51.6          assertthat_0.2.1       openssl_1.4.2         
+[127] rprojroot_1.3-2        withr_2.2.0            GenomeInfoDbData_1.2.3
+[130] hms_0.5.3              grid_4.0.2             tidyr_1.1.2           
+[133] rvcheck_0.1.8          rmarkdown_2.3          git2r_0.27.1          
+[136] ggforce_0.3.2         </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
