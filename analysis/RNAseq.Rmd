@@ -36,8 +36,7 @@ To install these packages you can use the code (or if you are compiling the docu
 ```{r install_packages, eval = FALSE}
 install.packages("devtools")
 install.packages("pheatmap")
-BiocManager::install(c("airway","Rsamtools","Rsubread","DESeq2","vsn",
-                       "org.Hs.eg.db","GenomicFeatures", "clusterProfiler"))
+BiocManager::install(c("airway","Rsamtools","Rsubread","DESeq2","vsn", "org.Hs.eg.db","GenomicFeatures", "clusterProfiler"))
 ```
 
 This workshop will focus on a summarized version of an RNA-seq experiment: a count matrix, which has genes along the rows and samples along the columns. The values in the matrix are the number of reads which could be uniquely aligned to the exons of a given gene for a given sample. We will demonstrate how to build a count matrix for a subset of reads from an experiment, and then use a pre-made count matrix, to avoid having students download the multi-gigabyte BAM files containing the aligned reads. A new pipeline for building count matrices, which skips the alignment step, is to use fast pseudoaligners such as `Sailfish`, `Salmon` and `kallisto`, followed by the `tximport` package. See the package vignette for more details. Here, we will continue with the read counting pipeline.
