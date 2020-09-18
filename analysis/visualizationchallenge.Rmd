@@ -69,3 +69,105 @@ geno <- transform(geno, id = as.character(id))
 
 Use this as a guide for creating a "Manhattan plot"\
 ![](https://raw.githubusercontent.com/jnovembre/BSD-QBio6/master/tutorials/data_visualization/wtccc.png)
+
+## Part A
+```{r Part A}
+#Part 1
+TA_hist <- ggplot(data = pheno,aes(x=TA)) + geom_histogram(bins = 45)
+
+TA_hist
+
+#Part 2
+# remove outliers and NA values
+pheno <- pheno %>% filter(TA > 43)
+pheno <- pheno %>% filter(!is.na(tibia))
+
+TA_TL_scatter <- ggplot(data = pheno,aes(x=TA, y=tibia)) + geom_point()
+
+TA_TL_scatter
+# ta.tl.lm <- lm(TA~tibia,data=pheno)
+
+scatter_with_line <- TA_TL_scatter + geom_smooth(method='lm',formula = y~x) + theme_bw()
+
+scatter_with_line
+
+#Part 3
+# remove NA values
+pheno <- pheno %>% filter(!is.na(AvToneD3))
+
+AvToneD3_hist <- ggplot(data = pheno,aes(x=AvToneD3)) + geom_histogram(bins = 45) 
+AvToneD3_hist
+
+#logit transform
+logit <- function(x) log((x + 0.001) / (1 - x + 0.001))
+
+AvToneD3_hist2 <- ggplot(data = pheno,aes(x=logit(AvToneD3))) + geom_histogram(bins = 45) 
+AvToneD3_hist2
+
+AvToneD3_boxplot <- ggplot(data=pheno,aes(x=FCbox,y=logit(AvToneD3))) + geom_boxplot()
+AvToneD3_boxplot
+```
+
+```{r Part B}
+BMD_mice <- ggplot(pheno, aes(BMD))+
+  geom_histogram(binwidth = 2) + labs(x = "BMD CFW")
+BMD_mice
+
+hmdp <- hmdp %>%
+  mutate(BMD = femur *1000)
+
+hmdp_BMD <- ggplot(hmdp, aes(BMD))+
+  geom_histogram(binwidth = 2) + labs(x = "BMD reference")
+
+hmdp_BMD
+plot_grid(hmdp_BMD, BMD_mice)
+```
+
+```{r Part C}
+
+gwscan <- gwscan %>% mutate(StrongSupport = abnormalBMD > 6)
+
+gwscan <- gwscan %>% mutate(position = as.double(NA))
+bp <- c()
+n = 0
+ for(i in unique(gwscan$chr)){
+  bp[i] <- max(gwscan[gwscan$chr==i,]$pos)
+  gwscan[gwscan$chr==i,'position'] <- gwscan[gwscan$chr==i,'pos'] + n
+    n <- n+bp[i]
+}
+
+centers <- gwscan %>% 
+  group_by(chr) %>% 
+  summarize(center = (max(position) + min(position)) / 2)
+
+gwscan_plot <- ggplot(data=gwscan,aes(x=position,y=abnormalBMD,color=as.factor(chr))) +
+  geom_point() +
+  geom_hline(yintercept = 6, color = "tomato", linetype = "dashed") +
+  scale_color_manual(values = rep(c("#276FBF", "#183059"), 19)) +
+  scale_x_continuous(label = centers$chr, breaks = centers$center) +
+  scale_y_continuous(limits = c(0,10), breaks = c(0,2,4,6,8,10)) +
+  theme(legend.position = "none", axis.ticks.x = element_blank(),
+        axis.text.x = element_text(angle = 270),
+        panel.background = element_rect(fill = "white"),
+        panel.border = element_rect(fill = NA)) + 
+  labs(x = "Chromosome", y = "-log10(P)")
+
+gwscan_plot
+
+#Part 2
+geno_snp <- read_csv("data/geno_rs29477109.csv")
+
+pheno_snp <- as_tibble(pheno) %>%
+  select(id, BMD) %>% 
+  mutate(id = as.double(id))
+
+snp_bmd <- full_join(geno_snp, pheno_snp) %>%
+  mutate(dosage = round(dosage),
+         dosage = factor(dosage)) %>%
+  drop_na(BMD, dosage) %>%
+  group_by(dosage) %>%
+
+ggplot(snp_bmd, aes(x = dosage, y = BMD, color = dosage)) + geom_boxplot() + labs(x = "Genotype\nTT (0) CT (1) CC (2)") + theme(legend.position = "none")
+  
+```
+
