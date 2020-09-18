@@ -20,8 +20,9 @@ Welcome to my **first** research website. This page will house links to the vari
 
 ## Workshops:
 
-* [Computational Immunobiology](immunobiology.html)\
+* [Computational Immunobiology](immunobiology.html)
 * [Population Genetics](populationgenetics.html)
+* [RNA-seq Data Analysis](RNAseq.html)
 
 ## Challenges:
 
